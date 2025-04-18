@@ -3,12 +3,12 @@ from rest_framework import serializers
 
 class Bounties(models.Model):
     
-    tilte = models.CharField()
+    title = models.CharField()
     descrition = models.TextField()
     deadline = models.CharField()
     amount = models.IntegerField()
     task_type = models.CharField()
-    end_date = models.DateField()
+    end_date = models.DateField(null = True)
     is_selected = models.BooleanField(default=False)
     assigned_candidate_id = models.IntegerField()
     status = models.IntegerField()

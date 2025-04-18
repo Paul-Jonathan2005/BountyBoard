@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from user.views import RegisterPerson, LoginPerson, LogoutPerson
+from bounties.views import bounty_types, get_bounties
 from django.urls import path
 
 urlpatterns = [
@@ -23,4 +24,6 @@ urlpatterns = [
     path('register/', RegisterPerson.as_view()),
     path('login/',LoginPerson.as_view()),
     path('logout/',LogoutPerson.as_view()),
+    path('get-bounty-types/',bounty_types),
+    path('get-bounty-types/<str:task_type_value>/get-bounties',get_bounties),
 ]

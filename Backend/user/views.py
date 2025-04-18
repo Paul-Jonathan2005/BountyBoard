@@ -2,10 +2,11 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer, LoginSerializer
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework import serializers
+from rest_framework.authentication import BasicAuthentication
 
 class RegisterPerson(APIView):
     
@@ -28,6 +29,8 @@ class RegisterPerson(APIView):
         
         
 class LoginPerson(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [permissions.AllowAny]
     
     def post(self, request):
         data = request.data
