@@ -7,7 +7,6 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework import serializers
 
-
 class RegisterPerson(APIView):
     
     def post(self, request):
@@ -49,3 +48,13 @@ class LoginPerson(APIView):
             'token': str(token),
             
         }, status.HTTP_202_ACCEPTED)
+
+
+class LogoutPerson(APIView):
+
+    def post(self, request):
+        request.user.auth_token.delete() 
+        return Response({
+            'status': True,
+            'message': 'Logout successful'
+        }, status=status.HTTP_200_OK)
