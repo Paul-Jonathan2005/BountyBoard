@@ -1,8 +1,8 @@
-from algopy import gtxn
+from algopy import UInt64, gtxn
 from algopy import ARC4Contract, arc4, Global, itxn, BoxMap
 
 
-class TaskData(arc4.Struct):
+class TaskData(arc4.Struct, frozen= True):
     company: arc4.Address
     freelancer: arc4.Address
     reward: arc4.UInt64
@@ -28,18 +28,22 @@ class TaskBountyContract(ARC4Contract):
             freelancer=freelancer,
             reward=reward,  
         )
-        self.box_map_struct[task_id] = task_data.copy()
+        self.box_map_struct[task_id] = task_data
 
     @arc4.abimethod
-    def release_reward(self, task_id: arc4.UInt64, caller: arc4.Address) -> None:
-        task_data = self.box_map_struct[task_id].copy()
+    def release_reward(self, task_id: arc4.UInt64, caller: arc4.Address) -> UInt64:
+        task_data = self.box_map_struct[task_id]
         assert caller == task_data.company, "Only company can release"
 
-        itxn.Payment(
+        result = itxn.Payment(
             sender=Global.current_application_address,
             receiver=task_data.freelancer.native,
-            amount=task_data.reward.native
+            amount=task_data.reward.native,
+            fee=10000
         ).submit()
+        
 
         # Optionally delete the task box
         del self.box_map_struct[task_id]
+        
+        return result.amount
