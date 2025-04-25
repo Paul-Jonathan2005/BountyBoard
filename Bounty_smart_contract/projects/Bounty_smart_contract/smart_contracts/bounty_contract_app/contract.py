@@ -39,7 +39,7 @@ class TaskBountyContract(ARC4Contract):
             sender=Global.current_application_address,
             receiver=task_data.freelancer.native,
             amount=task_data.reward.native,
-            fee=10000
+            fee=0
         ).submit()
         
 
