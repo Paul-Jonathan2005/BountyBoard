@@ -10,10 +10,16 @@ class Bounties(models.Model):
     deadline = models.CharField()
     amount = models.IntegerField()
     task_type = models.CharField()
-    end_date = models.DateField(null = True)
     is_selected = models.BooleanField(default=False)
-    assigned_candidate_id = models.IntegerField()
+
+    
+class BountyFreelancerMap(models.Model):
+    
+    bounty_id = models.ForeignKey(Bounties, on_delete=models.CASCADE)
+    assigned_candidate_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     status = models.IntegerField()
+    end_date = models.DateField(null = True)
+    start_date = models.DateField(null = True)
     
     
 class Request_table(models.Model):
