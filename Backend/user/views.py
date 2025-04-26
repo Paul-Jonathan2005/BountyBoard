@@ -17,7 +17,7 @@ class RegisterPerson(APIView):
         if not serializer.is_valid():
             return Response({
                 'status': False,
-                'message': serializer.error_messages
+                'message': serializer.errors
             }, status.HTTP_400_BAD_REQUEST)
         
         serializer.save()
@@ -39,7 +39,7 @@ class LoginPerson(APIView):
         if not serializer.is_valid():
             return Response({
                 'status': False,
-                'message': 'UserName or Password is incorrect'
+                'message': serializer.errors
             }, status.HTTP_400_BAD_REQUEST)
             
         user = serializer.validated_data['user']

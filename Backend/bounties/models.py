@@ -1,6 +1,8 @@
 from django.db import models
 from rest_framework import serializers
 
+from user.models import MyUser
+
 class Bounties(models.Model):
     
     title = models.CharField()
@@ -13,16 +15,17 @@ class Bounties(models.Model):
     assigned_candidate_id = models.IntegerField()
     status = models.IntegerField()
     
+    
 class Request_table(models.Model):
     
-    bounty_id = models.IntegerField()
-    requested_candidate_id =  models.IntegerField()
-    
+    bounty_id = models.ForeignKey(Bounties, on_delete=models.CASCADE)
+    requested_candidate_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+
 
 class Chat_table(models.Model):
     
-    bounty_id = models.IntegerField()
-    assigned_candidate_id = models.IntegerField()
-    client_id = models.IntegerField()
+    bounty_id = models.ForeignKey(Bounties, on_delete=models.CASCADE)
+    assigned_candidate_id = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="assigned_chats")
+    client_id = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="client_chats")
     message = models.TextField()
     msg_order = models.IntegerField()
