@@ -8,6 +8,11 @@ class GetBountySerializer(serializers.ModelSerializer):
     class Meta:
         model = Bounties
         fields = ['title','descrition','deadline','amount', 'status', 'id']
+        
+class BountySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bounties
+        fields = '__all__'
 
 class RequestBountySerializer(serializers.ModelSerializer):
     class Meta:

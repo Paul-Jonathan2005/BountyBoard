@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
 
 from rest_framework import serializers
-from .models import Bounties
-from .serializers import GetBountySerializer, RequestBountySerializer
+from .models import Bounties, BountyFreelancerMap
+from .serializers import GetBountySerializer, RequestBountySerializer, BountySerializer
 
 
 @api_view(['GET' ])
@@ -44,3 +44,14 @@ def request_bounty(request):
         'status': True,
         'message': 'Bounty Requested'
     }, status.HTTP_201_CREATED)
+    
+    
+@api_view(['GET'])
+def get_freelancer_bounties(request, freelancer_id):
+   freelancer_bounty_ids = BountyFreelancerMap.objects.filter(assigned_candidate_id = freelancer_id).values_list('bounty_id', flat=True)
+   freelancer_bounties = Bounties.objects.filter(id__in= freelancer_bounty_ids)
+   serializer = GetBountySerializer(instance=freelancer_bounties, many= True)
+   
+   return Response({
+        'freelancer_bounties' : serializer.data
+    }, status.HTTP_200_OK)
