@@ -47,7 +47,7 @@ class LoginPerson(APIView):
         
         return Response({
             'status': True,
-            'message': 'Login Succeful',
+            'message': 'Login Successful',
             'token': str(token),
             
         }, status.HTTP_202_ACCEPTED)

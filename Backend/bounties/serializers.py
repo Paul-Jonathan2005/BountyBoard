@@ -13,6 +13,34 @@ class BountySerializer(serializers.ModelSerializer):
     class Meta:
         model = Bounties
         fields = '__all__'
+        
+class CreateBountySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bounties
+        fields = ['title','descrition','deadline','amount', 'task_type']
+        
+    
+    def validate(self, data):
+        if not data['amount'] > 0:
+            raise serializers.ValidationError('Invalid Amount')
+        
+        if data['deadline'] < 0:
+            raise serializers.ValidationError('Invalid DeadLine')
+        
+        return data
+    
+    def create(self, validated_data):
+        bounty = Bounties(
+            title = str(validated_data['title']).title(),
+            descrition = str(validated_data['descrition']).title(),
+            deadline = validated_data['deadline'],
+            amount = validated_data['amount'],
+            task_type = str(validated_data['task_type']).upper(),
+        )
+        bounty.save()
+        return validated_data
+        
+        
 
 class RequestBountySerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,5 +58,6 @@ class RequestBountySerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('Request already Submitted')
         return data
         
+    
                 
             

@@ -7,13 +7,13 @@ class Bounties(models.Model):
     
     title = models.CharField()
     descrition = models.TextField()
-    deadline = models.CharField()
+    deadline = models.IntegerField()
     amount = models.IntegerField()
     task_type = models.CharField()
     is_selected = models.BooleanField(default=False)
     end_date = models.DateField(null = True)
     start_date = models.DateField(null = True)
-    status = models.CharField(default = 'UNASSIGNED')
+    status = models.IntegerField(default = 0)
 
     
 class BountyFreelancerMap(models.Model):
