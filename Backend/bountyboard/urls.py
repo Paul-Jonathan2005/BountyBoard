@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from user.views import RegisterPerson, LoginPerson, LogoutPerson
-from bounties.views import bounty_types, get_bounties, request_bounty,get_freelancer_bounties, Bounty, get_client_bounties
+from bounties.views import bounty_types, get_bounties, request_bounty,get_freelancer_bounties, Bounty, get_client_bounties, get_bounties_request
 from django.urls import path
 
 urlpatterns = [
@@ -30,4 +30,5 @@ urlpatterns = [
     path('get-freelancer-bounties/<int:freelancer_id>',get_freelancer_bounties),
     path('create-bounty/', Bounty.as_view()),
     path('get-client-bounties/<int:client_id>',get_client_bounties),
+    path('get-client-bounty/<int:bounty_id>/get-requests',get_bounties_request),
 ]

@@ -8,7 +8,8 @@ from rest_framework.decorators import api_view
 from rest_framework import serializers
 
 from user.models import MyUser
-from .models import Bounties, BountyFreelancerMap
+from user.serializers import BountyFreelancerSerializer
+from .models import Bounties, BountyFreelancerMap, Request_table
 from .serializers import GetBountySerializer, RequestBountySerializer, BountySerializer, CreateBountySerializer
 
 
@@ -89,6 +90,25 @@ class Bounty(APIView):
 def get_client_bounties(request, client_id):
    client_bounties = Bounties.objects.filter(client_id = client_id)
    serializer = BountySerializer(instance=client_bounties, many = True)
+   
+   return Response({
+        'client_bounties' : serializer.data
+    }, status.HTTP_200_OK)
+   
+   
+@api_view(['GET'])
+def get_bounties_request(request, bounty_id):
+    
+   if not Bounties.objects.filter(id = bounty_id).exists():
+         return Response({
+        'status': False,
+        'message' : "Invalid Bounty ID"
+    }, status.HTTP_400_BAD_REQUEST)
+         
+         
+   bounties_request = Request_table.objects.filter(bounty_id = bounty_id).values_list("requested_candidate_id", flat=True)
+   freelancer_details = MyUser.objects.filter(id__in = bounties_request)
+   serializer = BountyFreelancerSerializer(instance=freelancer_details, many = True)
    
    return Response({
         'client_bounties' : serializer.data

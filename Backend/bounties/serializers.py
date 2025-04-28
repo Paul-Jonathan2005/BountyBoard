@@ -59,6 +59,10 @@ class RequestBountySerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(" Bounty Already Selected")
         
         if data['requested_candidate_id']:
+            
+            if not MyUser.objects.filter(is_client = False).filter(id = data['requested_candidate_id'].id).exists():
+                raise serializers.ValidationError('Invalid Freelancer ID')
+                
             if  Request_table.objects.filter(bounty_id = data['bounty_id'].id).filter(requested_candidate_id = data['requested_candidate_id']).exists():
                 raise serializers.ValidationError('Request already Submitted')
         return data

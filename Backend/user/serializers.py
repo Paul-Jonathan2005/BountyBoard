@@ -76,8 +76,10 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Must include both username and password")
         
         return data
-        
-                     
-        
-
     
+class  BountyFreelancerSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = MyUser
+        fields = ['username', 'first_name', 'last_name', 'email',  'phone_number', 'rating', 'age', 'gender', 'linkedin_profile_link']
+        
