@@ -14,6 +14,7 @@ class Bounties(models.Model):
     end_date = models.DateField(null = True)
     start_date = models.DateField(null = True)
     status = models.IntegerField(default = 0)
+    client_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     
 class BountyFreelancerMap(models.Model):

@@ -9,6 +9,8 @@ from rest_framework import serializers
 from rest_framework.authentication import BasicAuthentication
 
 class RegisterPerson(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [permissions.AllowAny]
     
     def post(self, request):
         data = request.data

@@ -71,7 +71,16 @@ class Bounty(APIView):
             
         serializer.save()
         return Response({
-            'status': True,
-            'message': 'Bounty Created Successfullly',
+            'status' : True,
+            'message' : 'Bounty Created Successfullly',
             
         }, status.HTTP_201_CREATED)
+        
+@api_view(['GET'])
+def get_client_bounties(request, client_id):
+   client_bounties = Bounties.objects.filter(client_id = client_id)
+   serializer = BountySerializer(instance=client_bounties, many = True)
+   
+   return Response({
+        'client_bounties' : serializer.data
+    }, status.HTTP_200_OK)

@@ -17,7 +17,7 @@ class BountySerializer(serializers.ModelSerializer):
 class CreateBountySerializer(serializers.ModelSerializer):
     class Meta:
         model = Bounties
-        fields = ['title','descrition','deadline','amount', 'task_type']
+        fields = ['title','descrition','deadline','amount', 'task_type', 'client_id']
         
     
     def validate(self, data):
@@ -26,6 +26,10 @@ class CreateBountySerializer(serializers.ModelSerializer):
         
         if data['deadline'] < 0:
             raise serializers.ValidationError('Invalid DeadLine')
+        
+        if data['client_id']:
+            if not MyUser.objects.filter(is_client = True).filter(id = data['client_id'].id).exists():
+                raise serializers.ValidationError('Invalid Client ID')
         
         return data
     
@@ -36,6 +40,7 @@ class CreateBountySerializer(serializers.ModelSerializer):
             deadline = validated_data['deadline'],
             amount = validated_data['amount'],
             task_type = str(validated_data['task_type']).upper(),
+            client_id = validated_data['client_id'],
         )
         bounty.save()
         return validated_data
