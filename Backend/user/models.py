@@ -3,8 +3,9 @@ from django.db import models
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+
 class MyUser(AbstractUser):
-    
+
     is_client = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=15, blank=True)
     company_name = models.CharField(max_length=100, blank=True)

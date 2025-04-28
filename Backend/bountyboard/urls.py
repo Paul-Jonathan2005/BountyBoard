@@ -14,21 +14,30 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from user.views import RegisterPerson, LoginPerson, LogoutPerson
-from bounties.views import bounty_types, get_bounties, request_bounty,get_freelancer_bounties, Bounty, get_client_bounties, get_bounties_request
+from bounties.views import (
+    bounty_types,
+    get_bounties,
+    request_bounty,
+    get_freelancer_bounties,
+    Bounty,
+    get_client_bounties,
+    get_bounties_request,
+)
 from django.urls import path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('register/', RegisterPerson.as_view()),
-    path('login/',LoginPerson.as_view()),
-    path('logout/',LogoutPerson.as_view()),
-    path('get-bounty-types/',bounty_types),
-    path('get-bounty-types/<str:task_type_value>/get-bounties',get_bounties),
-    path('request-bounty/',request_bounty),
-    path('get-freelancer-bounties/<int:freelancer_id>',get_freelancer_bounties),
-    path('create-bounty/', Bounty.as_view()),
-    path('get-client-bounties/<int:client_id>',get_client_bounties),
-    path('get-client-bounty/<int:bounty_id>/get-requests',get_bounties_request),
+    path("admin/", admin.site.urls),
+    path("register/", RegisterPerson.as_view()),
+    path("login/", LoginPerson.as_view()),
+    path("logout/", LogoutPerson.as_view()),
+    path("get-bounty-types/", bounty_types),
+    path("get-bounty-types/<str:task_type_value>/get-bounties", get_bounties),
+    path("request-bounty/", request_bounty),
+    path("get-freelancer-bounties/<int:freelancer_id>", get_freelancer_bounties),
+    path("create-bounty/", Bounty.as_view()),
+    path("get-client-bounties/<int:client_id>", get_client_bounties),
+    path("get-client-bounty/<int:bounty_id>/get-requests", get_bounties_request),
 ]
