@@ -61,7 +61,7 @@ class RequestBountySerializer(serializers.ModelSerializer):
         if data["bounty_id"]:
             if (
                 not Bounties.objects.filter(id=data["bounty_id"].id)
-                .filter(is_selected=False)
+                .filter(is_assigened=False)
                 .exists()
             ):
                 raise serializers.ValidationError(" Bounty Already Selected")
@@ -94,7 +94,7 @@ class AcceptBountySerializer(serializers.ModelSerializer):
         if data["bounty_id"]:
             if (
                 not Bounties.objects.filter(id=data["bounty_id"].id)
-                .filter(is_selected=False)
+                .filter(is_assigened=False)
                 .exists()
             ):
                 raise serializers.ValidationError(" Bounty Already Selected")

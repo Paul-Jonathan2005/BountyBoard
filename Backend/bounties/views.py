@@ -35,7 +35,9 @@ def bounty_types(request):
 @api_view(["GET"])
 def get_bounties(request, task_type_value):
     data = request.data
-    task_bounties = Bounties.objects.filter(task_type=task_type_value)
+    task_bounties = Bounties.objects.filter(task_type=task_type_value).filter(
+        is_assigened=False
+    )
     serializer = GetBountySerializer(instance=task_bounties, many=True)
 
     return Response({"bounties": serializer.data}, status.HTTP_200_OK)
@@ -107,6 +109,30 @@ def get_client_bounties(request, client_id):
 
 
 @api_view(["GET"])
+def submit_bounty(request, bounty_id):
+    bounty = Bounties.objects.get(id=bounty_id)
+    bounty.is_completed = True
+    bounty.save()
+
+    return Response(
+        {"status": True, "message": " Bounty Submitted Successfully"},
+        status.HTTP_200_OK,
+    )
+
+
+@api_view(["GET"])
+def transfer_amount(request, bounty_id):
+    bounty = Bounties.objects.get(id=bounty_id)
+    bounty.is_amount_transfered = True
+    bounty.save()
+
+    return Response(
+        {"status": True, "message": " Amount Transfered Successfully "},
+        status.HTTP_200_OK,
+    )
+
+
+@api_view(["GET"])
 def get_bounties_request(request, bounty_id):
 
     if not Bounties.objects.filter(id=bounty_id).exists():
@@ -137,17 +163,17 @@ class accept_bounty_request(APIView):
             )
 
         serializer.save()
-        #delete all the pending requested ID's
+        # delete all the pending requested ID's
         Request_table.objects.filter(bounty_id=data["bounty_id"]).delete()
 
         bounty = Bounties.objects.get(id=data["bounty_id"])
-        
-        bounty.is_selected = True
+
+        bounty.is_assigened = True
         # Set end_date using months instead of days
         bounty.start_date = date.today()
         bounty.end_date = date.today() + relativedelta(months=bounty.deadline)
         bounty.save()
-        
+
         return Response(
             {
                 "status": True,
