@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from user.models import MyUser
-from .models import Bounties, Request_table, Chat_table
+from .models import Bounties, Request_table, Chat_table, BountyFreelancerMap
 
 
 class GetBountySerializer(serializers.ModelSerializer):
@@ -82,3 +82,44 @@ class RequestBountySerializer(serializers.ModelSerializer):
             ):
                 raise serializers.ValidationError("Request already Submitted")
         return data
+
+
+class AcceptBountySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Request_table
+        fields = "__all__"
+
+    def validate(self, data):
+
+        if data["bounty_id"]:
+            if (
+                not Bounties.objects.filter(id=data["bounty_id"].id)
+                .filter(is_selected=False)
+                .exists()
+            ):
+                raise serializers.ValidationError(" Bounty Already Selected")
+
+        if data["requested_candidate_id"]:
+
+            if (
+                not MyUser.objects.filter(is_client=False)
+                .filter(id=data["requested_candidate_id"].id)
+                .exists()
+            ):
+                raise serializers.ValidationError("Invalid Freelancer ID")
+
+            if (
+                not Request_table.objects.filter(bounty_id=data["bounty_id"].id)
+                .filter(requested_candidate_id=data["requested_candidate_id"])
+                .exists()
+            ):
+                raise serializers.ValidationError("Request Not Found")
+        return data
+
+    def create(self, validated_data):
+        bounty_freelancer_map = BountyFreelancerMap(
+            bounty_id=validated_data["bounty_id"],
+            assigned_candidate_id=validated_data["requested_candidate_id"],
+        )
+        bounty_freelancer_map.save()
+        return validated_data

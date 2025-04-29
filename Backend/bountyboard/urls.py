@@ -25,6 +25,7 @@ from bounties.views import (
     Bounty,
     get_client_bounties,
     get_bounties_request,
+    accept_bounty_request,
 )
 from django.urls import path
 
@@ -40,4 +41,5 @@ urlpatterns = [
     path("create-bounty/", Bounty.as_view()),
     path("get-client-bounties/<int:client_id>", get_client_bounties),
     path("get-client-bounty/<int:bounty_id>/get-requests", get_bounties_request),
+    path("accept-bounty-request/", accept_bounty_request.as_view()),
 ]

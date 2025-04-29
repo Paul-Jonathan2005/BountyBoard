@@ -11,6 +11,7 @@ from user.models import MyUser
 from user.serializers import BountyFreelancerSerializer
 from .models import Bounties, BountyFreelancerMap, Request_table
 from .serializers import (
+    AcceptBountySerializer,
     GetBountySerializer,
     RequestBountySerializer,
     BountySerializer,
@@ -118,3 +119,33 @@ def get_bounties_request(request, bounty_id):
     serializer = BountyFreelancerSerializer(instance=freelancer_details, many=True)
 
     return Response({"client_bounties": serializer.data}, status.HTTP_200_OK)
+
+
+class accept_bounty_request(APIView):
+
+    def post(self, request):
+        data = request.data
+        serializer = AcceptBountySerializer(data=data)
+
+        if not serializer.is_valid():
+            return Response(
+                {"status": False, "message": serializer.errors},
+                status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer.save()
+        #delete all the pending requested ID's
+        Request_table.objects.filter(bounty_id=data["bounty_id"]).delete()
+
+        bounty = Bounties.objects.get(id=data["bounty_id"])
+        
+        bounty.is_selected = True
+        bounty.save()
+        
+        return Response(
+            {
+                "status": True,
+                "message": "Bounty Accepted Successfullly",
+            },
+            status.HTTP_201_CREATED,
+        )
