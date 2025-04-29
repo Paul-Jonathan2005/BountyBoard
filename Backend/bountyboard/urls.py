@@ -39,11 +39,14 @@ urlpatterns = [
     path("get-bounty-types/", bounty_types),
     path("get-bounty-types/<str:task_type_value>/get-bounties", get_bounties),
     path("request-bounty/", request_bounty),
-    path("get-freelancer-bounties/<int:freelancer_id>", get_freelancer_bounties),
+    path(
+        "get-freelancer-bounties/<int:freelancer_id>/<str:bounty_type>",
+        get_freelancer_bounties,
+    ),
     path("create-bounty/", Bounty.as_view()),
-    path("get-client-bounties/<int:client_id>", get_client_bounties),
+    path("get-client-bounties/<int:client_id>/<str:bounty_type>", get_client_bounties),
     path("get-client-bounty/<int:bounty_id>/get-requests", get_bounties_request),
     path("accept-bounty-request/", accept_bounty_request.as_view()),
-    path("submit-bounty/<int:bounty_id>",submit_bounty),
-    path("transfer-amount/<int:bounty_id>",transfer_amount)
+    path("submit-bounty/<int:bounty_id>", submit_bounty),
+    path("transfer-amount/<int:bounty_id>", transfer_amount),
 ]

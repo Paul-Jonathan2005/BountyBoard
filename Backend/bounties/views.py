@@ -72,7 +72,7 @@ def request_bounty(request):
 
 
 @api_view(["GET"])
-def get_freelancer_bounties(request, freelancer_id):
+def get_freelancer_bounties(request, freelancer_id, bounty_type):
 
     if not MyUser.objects.filter(is_client=False).filter(id=freelancer_id).exists():
         return Response(
@@ -84,6 +84,17 @@ def get_freelancer_bounties(request, freelancer_id):
         assigned_candidate_id=freelancer_id
     ).values_list("bounty_id", flat=True)
     freelancer_bounties = Bounties.objects.filter(id__in=freelancer_bounty_ids)
+
+    if bounty_type == "INPROGRESS":
+        freelancer_bounties = freelancer_bounties.filter(is_completed=False)
+    elif bounty_type == "COMPLETED":
+        freelancer_bounties = freelancer_bounties.filter(is_completed=True).filter(
+            is_amount_transfered=False
+        )
+    elif bounty_type == "PAID":
+        freelancer_bounties = freelancer_bounties.filter(is_completed=True).filter(
+            is_amount_transfered=True
+        )
 
     sort_by = request.GET.get("sort_by", "title")
     ordering = []
@@ -120,8 +131,19 @@ class Bounty(APIView):
 
 
 @api_view(["GET"])
-def get_client_bounties(request, client_id):
+def get_client_bounties(request, client_id, bounty_type):
+
     client_bounties = Bounties.objects.filter(client_id=client_id)
+    if bounty_type == "INPROGRESS":
+        client_bounties = client_bounties.filter(is_completed=False)
+    elif bounty_type == "COMPLETED":
+        client_bounties = client_bounties.filter(is_completed=True).filter(
+            is_amount_transfered=False
+        )
+    elif bounty_type == "PAID":
+        client_bounties = client_bounties.filter(is_completed=True).filter(
+            is_amount_transfered=True
+        )
 
     sort_by = request.GET.get("sort_by", "title")
     ordering = []
