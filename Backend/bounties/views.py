@@ -24,11 +24,15 @@ from dateutil.relativedelta import relativedelta
 
 @api_view(["GET"])
 def bounty_types(request):
-    task_types = (
-        Bounties.objects.values_list("task_type", flat=True)
-        .distinct()
-        .order_by("task_type")
-    )
+    task_types = Bounties.objects.values_list("task_type", flat=True).distinct()
+
+    sort_by = request.GET.get("sort_by", "task_type")
+    ordering = []
+    if sort_by:
+        ordering = [field.strip() for field in sort_by.split(",")]
+    if ordering:
+        task_types = task_types.order_by(*ordering)
+
     return Response({"task_types": task_types}, status.HTTP_200_OK)
 
 
@@ -38,8 +42,15 @@ def get_bounties(request, task_type_value):
     task_bounties = Bounties.objects.filter(task_type=task_type_value).filter(
         is_assigened=False
     )
-    serializer = GetBountySerializer(instance=task_bounties, many=True)
 
+    sort_by = request.GET.get("sort_by", "title")
+    ordering = []
+    if sort_by:
+        ordering = [field.strip() for field in sort_by.split(",")]
+    if ordering:
+        task_bounties = task_bounties.order_by(*ordering)
+
+    serializer = GetBountySerializer(instance=task_bounties, many=True)
     return Response({"bounties": serializer.data}, status.HTTP_200_OK)
 
 
@@ -73,6 +84,14 @@ def get_freelancer_bounties(request, freelancer_id):
         assigned_candidate_id=freelancer_id
     ).values_list("bounty_id", flat=True)
     freelancer_bounties = Bounties.objects.filter(id__in=freelancer_bounty_ids)
+
+    sort_by = request.GET.get("sort_by", "title")
+    ordering = []
+    if sort_by:
+        ordering = [field.strip() for field in sort_by.split(",")]
+    if ordering:
+        freelancer_bounties = freelancer_bounties.order_by(*ordering)
+
     serializer = GetBountySerializer(instance=freelancer_bounties, many=True)
 
     return Response({"freelancer_bounties": serializer.data}, status.HTTP_200_OK)
@@ -103,6 +122,14 @@ class Bounty(APIView):
 @api_view(["GET"])
 def get_client_bounties(request, client_id):
     client_bounties = Bounties.objects.filter(client_id=client_id)
+
+    sort_by = request.GET.get("sort_by", "title")
+    ordering = []
+    if sort_by:
+        ordering = [field.strip() for field in sort_by.split(",")]
+    if ordering:
+        client_bounties = client_bounties.order_by(*ordering)
+
     serializer = BountySerializer(instance=client_bounties, many=True)
 
     return Response({"client_bounties": serializer.data}, status.HTTP_200_OK)
