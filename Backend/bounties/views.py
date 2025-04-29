@@ -18,6 +18,9 @@ from .serializers import (
     CreateBountySerializer,
 )
 
+from datetime import date
+from dateutil.relativedelta import relativedelta
+
 
 @api_view(["GET"])
 def bounty_types(request):
@@ -140,6 +143,9 @@ class accept_bounty_request(APIView):
         bounty = Bounties.objects.get(id=data["bounty_id"])
         
         bounty.is_selected = True
+        # Set end_date using months instead of days
+        bounty.start_date = date.today()
+        bounty.end_date = date.today() + relativedelta(months=bounty.deadline)
         bounty.save()
         
         return Response(
