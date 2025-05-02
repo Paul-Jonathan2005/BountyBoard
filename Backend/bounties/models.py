@@ -35,11 +35,6 @@ class Request_table(models.Model):
 class Chat_table(models.Model):
 
     bounty_id = models.ForeignKey(Bounties, on_delete=models.CASCADE)
-    assigned_candidate_id = models.ForeignKey(
-        MyUser, on_delete=models.CASCADE, related_name="assigned_chats"
-    )
-    client_id = models.ForeignKey(
-        MyUser, on_delete=models.CASCADE, related_name="client_chats"
-    )
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     message = models.TextField()
-    msg_order = models.IntegerField()
+    created_time = models.DateTimeField()

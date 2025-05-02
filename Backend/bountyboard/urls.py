@@ -28,6 +28,7 @@ from bounties.views import (
     accept_bounty_request,
     submit_bounty,
     transfer_amount,
+    message,
 )
 from django.urls import path
 
@@ -49,4 +50,6 @@ urlpatterns = [
     path("accept-bounty-request/", accept_bounty_request.as_view()),
     path("submit-bounty/<int:bounty_id>", submit_bounty),
     path("transfer-amount/<int:bounty_id>", transfer_amount),
+    path("message/", message.as_view()),
+    path("message/<int:bounty_id>", message.as_view()),
 ]

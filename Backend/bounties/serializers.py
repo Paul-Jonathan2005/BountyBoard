@@ -123,3 +123,30 @@ class AcceptBountySerializer(serializers.ModelSerializer):
         )
         bounty_freelancer_map.save()
         return validated_data
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chat_table
+        fields = "__all__"
+
+    def validate(self, data):
+        if not Bounties.objects.filter(id=data["bounty_id"].id).exists():
+            raise serializers.ValidationError("Invalid bounty_id")
+
+        if not MyUser.objects.filter(id=data["user"].id).exists():
+            raise serializers.ValidationError("Invalid sender ID")
+
+        if not data["message"].strip():
+            raise serializers.ValidationError("Message cannot be empty")
+        return data
+
+    def create(self, validated_data):
+        chat = Chat_table(
+            bounty_id=validated_data["bounty_id"],
+            user=validated_data["user"],
+            message=validated_data["message"],
+            created_time=validated_data["created_time"],
+        )
+        chat.save()
+        return validated_data

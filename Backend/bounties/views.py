@@ -9,13 +9,14 @@ from rest_framework import serializers
 
 from user.models import MyUser
 from user.serializers import BountyFreelancerSerializer
-from .models import Bounties, BountyFreelancerMap, Request_table
+from .models import Bounties, BountyFreelancerMap, Chat_table, Request_table
 from .serializers import (
     AcceptBountySerializer,
     GetBountySerializer,
     RequestBountySerializer,
     BountySerializer,
     CreateBountySerializer,
+    MessageSerializer,
 )
 
 from datetime import date
@@ -230,3 +231,30 @@ class accept_bounty_request(APIView):
             },
             status.HTTP_201_CREATED,
         )
+
+class message(APIView):
+    def post(self, request):
+        data = request.data
+        serializer = MessageSerializer(data=data)
+
+        if not serializer.is_valid():
+            return Response(
+                {"status": False, "message": serializer.errors},
+                status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer.save()
+        return Response(
+            {"status": True, "message": "Message sent successfully"},
+            status.HTTP_201_CREATED,
+        )
+    
+    def get(self, request, bounty_id):
+        if not bounty_id:
+            return Response(
+                {"status": False, "message": "Bounty_id is Required"},
+                status.HTTP_400_BAD_REQUEST,
+            )
+        message = Chat_table.objects.filter(bounty_id=bounty_id).order_by('id')
+        serializers = MessageSerializer(message, many = True)
+        return Response({"status": True, "chat": serializers.data}, status.HTTP_200_OK)
