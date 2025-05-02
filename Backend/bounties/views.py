@@ -232,6 +232,7 @@ class accept_bounty_request(APIView):
             status.HTTP_201_CREATED,
         )
 
+
 class message(APIView):
     def post(self, request):
         data = request.data
@@ -248,13 +249,13 @@ class message(APIView):
             {"status": True, "message": "Message sent successfully"},
             status.HTTP_201_CREATED,
         )
-    
+
     def get(self, request, bounty_id):
         if not bounty_id:
             return Response(
                 {"status": False, "message": "Bounty_id is Required"},
                 status.HTTP_400_BAD_REQUEST,
             )
-        message = Chat_table.objects.filter(bounty_id=bounty_id).order_by('id')
-        serializers = MessageSerializer(message, many = True)
+        message = Chat_table.objects.filter(bounty_id=bounty_id).order_by("id")
+        serializers = MessageSerializer(message, many=True)
         return Response({"status": True, "chat": serializers.data}, status.HTTP_200_OK)

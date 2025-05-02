@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from user.views import RegisterPerson, LoginPerson, LogoutPerson
+from user.views import RegisterPerson, LoginPerson, LogoutPerson, freelancer_rating
 from bounties.views import (
     bounty_types,
     get_bounties,
@@ -52,4 +52,5 @@ urlpatterns = [
     path("transfer-amount/<int:bounty_id>", transfer_amount),
     path("message/", message.as_view()),
     path("message/<int:bounty_id>", message.as_view()),
+    path("rating/", freelancer_rating),
 ]

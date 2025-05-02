@@ -86,10 +86,8 @@ class LoginSerializer(serializers.Serializer):
         username = data.get("username")
         password = data.get("password")
 
-        print(username, password)
         if username and password:
             user = authenticate(username=username, password=password)
-            print(user)
             if not user:
                 raise serializers.ValidationError("Invalid username or password")
             data["user"] = user
@@ -114,3 +112,27 @@ class BountyFreelancerSerializer(serializers.ModelSerializer):
             "gender",
             "linkedin_profile_link",
         ]
+
+
+class RatingSerializer(serializers.Serializer):
+    rating = serializers.FloatField()
+    user_id = serializers.IntegerField()
+
+    def validate(self, data):
+        if data["user_id"]:
+            if not MyUser.objects.filter(id=data["user_id"]).exists():
+                raise serializers.ValidationError("Invalid User ID")
+
+        return data
+
+    def create(self, validated_data):
+
+        user = MyUser.objects.get(id=validated_data["user_id"])
+
+        user.rating = (
+            (user.rating * user.num_of_rating) + validated_data["rating"]
+        ) / (user.num_of_rating + 1)
+
+        user.num_of_rating += 1
+        user.save()
+        return validated_data
