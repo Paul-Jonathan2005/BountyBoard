@@ -1,3 +1,4 @@
+import React from 'react';
 import AlgorandLogo from "../assets/image.png"
 import '../css/Header.css';
 

@@ -1,20 +1,51 @@
-
-
+import React from 'react';
+import Alert from '../components/Alert';
+import extractErrorMessage from '../utils/extractErrorMessage';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../services/api';
+
 
 function Register() {
-  const [paraWallet, setParaWallet] = useState('');
-  const [isValidPara, setIsValidPara] = useState(null);
+  const navigate = useNavigate();
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [type, setType] = useState("success")
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    first_name: '',
+    last_name: '',
+    phone_number: '',
+    email: '',
+    gender: '',
+    age: '',
+    company_name: '',
+    linkedin_profile_link: '',
+    para_wallet: '',
+  });
 
-  const validateParaWallet = () => {
-    // if (paraWallet.length === 58 && paraWallet.startsWith('P')) {
-    //   setIsValidPara(true);
-    //   alert('Para Wallet address is valid!');
-    // } else {
-    //   setIsValidPara(false);
-    //   alert('Invalid Para Wallet address.');
-    // }
-    setIsValidPara(true)
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const data = await registerUser(formData);
+      setAlertMessage('Registration successful!');
+      setShowAlert(true);
+      setType("success")
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
+    } catch (error) {
+          const msg = extractErrorMessage(error);
+          setAlertMessage(msg);
+          setShowAlert(true);
+          setType("error")
+    }
   };
 
   return (
@@ -27,7 +58,16 @@ function Register() {
       padding: '2rem',
       marginTop: '45px'
     }}>
-      <form style={{
+      {showAlert && (
+        <Alert
+          message={alertMessage}
+          type={type}
+          duration={3000}
+          onClose={() => setShowAlert(false)}
+        />
+      )}
+
+      <form onSubmit={handleSubmit} style={{
         display: 'flex',
         flexDirection: 'column',
         padding: '2rem',
@@ -39,49 +79,113 @@ function Register() {
       }}>
         <h2 style={{ marginBottom: '1rem', textAlign: 'center', color: '#111827' }}>Register</h2>
 
-        <input type="text" placeholder="Username" required style={inputStyle} />
-        <input type="password" placeholder="Password" required style={inputStyle} />
-        <input type="text" placeholder="First Name" required style={inputStyle} />
-        <input type="text" placeholder="Last Name" required style={inputStyle} />
-        <input type="tel" placeholder="Phone Number" required style={inputStyle} />
-        <input type="email" placeholder="Email" required style={inputStyle} />
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="text"
+          name="first_name"
+          placeholder="First Name"
+          value={formData.first_name}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="text"
+          name="last_name"
+          placeholder="Last Name"
+          value={formData.last_name}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="tel"
+          name="phone_number"
+          placeholder="Phone Number"
+          value={formData.phone_number}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
 
-        <select required style={{ ...inputStyle, marginBottom: '1rem' }}>
-          <option value="" disabled selected>Select Gender</option>
+        <select
+          name="gender"
+          value={formData.gender}
+          onChange={handleChange}
+          required
+          style={{ ...inputStyle, marginBottom: '1rem' }}
+        >
+          <option value="" disabled>Select Gender</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
           <option value="other">Other</option>
         </select>
 
-        <input type="number" placeholder="Age" min="0" max="120" required style={inputStyle} />
-        <input type="url" placeholder="LinkedIn Profile Link" style={inputStyle} />
+        <input
+          type="number"
+          name="age"
+          placeholder="Age in Years"
+          min="0"
+          max="120"
+          value={formData.age}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+         <input
+          type="text"
+          name="company_name"
+          placeholder="Company Name"
+          value={formData.company_name}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
 
-        <div style={{ display: 'flex', marginBottom: '1rem', gap: '0.5rem' }}>
-          <input
-            type="text"
-            placeholder="Para Wallet Address"
-            value={paraWallet}
-            onChange={(e) => setParaWallet(e.target.value)}
-            style={{ flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
-          />
-          <button
-            type="button"
-            onClick={validateParaWallet}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: '#1a3744',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap'
-            }}
-          >
-            Validate
-          </button>
-        </div>
+        <input
+          type="url"
+          name="linkedin_profile_link"
+          placeholder="LinkedIn Profile Link"
+          value={formData.linkedin_profile_link}
+          onChange={handleChange}
+          style={inputStyle}
+        />
 
-        {isValidPara && <button
+        <input
+          type="text"
+          name="para_wallet"
+          placeholder="Para Wallet Address"
+          value={formData.para_wallet}
+          onChange={handleChange}
+          style={inputStyle}
+        />
+        <button
           type="submit"
           style={{
             padding: '0.75rem',
@@ -96,7 +200,6 @@ function Register() {
         >
           Submit
         </button>
-        }
       </form>
     </div>
   );
