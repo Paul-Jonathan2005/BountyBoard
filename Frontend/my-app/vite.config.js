@@ -1,7 +1,14 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import env_config from './src/Config.js'
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-})
+
+export default {
+  server: {
+    proxy: {
+      '/api': {
+        target: env_config.backend_url,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  }
+};
