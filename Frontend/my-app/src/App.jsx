@@ -34,17 +34,18 @@
 
 // export default App
 
-
-import LoginPage from './pages/LoginPage.jsx'
+import React from 'react';
 import RegisterPage from './pages/RegisterPage.jsx'
+import { BrowserRouter as Router } from 'react-router-dom';
+import AppRoutes from './routes';
+
 
 
 export default function App() {
   return (
-    <main>
-      {/* <LoginPage /> */}
-      <RegisterPage />
-    </main>
+    <Router>
+      <AppRoutes />
+    </Router>
       
   )
 }
