@@ -30,7 +30,7 @@ function Login() {
       setShowAlert(true);
       setType("success")
       setTimeout(() => {
-        navigate('/home');
+      navigate('/freelancer/bounty-types');
       }, 1500);
     } catch (error) {
         const msg = extractErrorMessage(error);
