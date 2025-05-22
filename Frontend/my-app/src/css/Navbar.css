@@ -1,0 +1,61 @@
+.sidebar {
+  position: fixed;
+  top: 80px; /* height of header */
+  bottom: 40px; /* height of footer */
+  left: 0;
+  width: 60px;
+  background-color: #0f2027;
+  color: white;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+  z-index: 1000;
+}
+
+.sidebar.expanded {
+  width: 200px;
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.sidebar nav ul li {
+  padding: 15px 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sidebar nav ul li:hover {
+  background-color: #1a3744;
+}
+
+.sidebar nav ul li a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.submenu {
+  list-style: none;
+  margin-left: 10px;
+  padding-left: 20px;
+  margin: 4px;
+}
+
+.submenu li {
+  padding: 10px 20px;
+  margin-left: 20px;
+}
+
+.submenu li a {
+  color: #d1d5db;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.submenu li:hover {
+  background-color: #1f2937;
+}
