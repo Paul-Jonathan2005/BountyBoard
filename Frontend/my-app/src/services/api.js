@@ -16,6 +16,24 @@ export const registerUser = async (userData) => {
 
 export const loginUser = async (userData) => {
   const response = await API.post('login/', userData);
+  const token = response.data.token;
+  if (token) {
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('username', userData.username)
+  }
   return response.data;
 };
 
+export const logoutUser = async () => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.post('logout/', {}, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  if (response.status === 200) {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('username');
+  }
+  return response.data;
+};
