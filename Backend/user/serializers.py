@@ -138,7 +138,7 @@ class RatingSerializer(serializers.Serializer):
         return validated_data
 
 
-class PeraSerializer(serializers.Serializer):
+class UserDetailSerializer(serializers.Serializer):
     username = serializers.CharField()
 
     def validate(self, data):

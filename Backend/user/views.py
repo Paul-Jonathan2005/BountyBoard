@@ -6,7 +6,8 @@ from .serializers import (
     RegisterSerializer,
     LoginSerializer,
     RatingSerializer,
-    PeraSerializer,
+    UserDetailSerializer,
+    BountyFreelancerSerializer,
 )
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -92,17 +93,16 @@ def freelancer_rating(request):
 
 
 @api_view(["GET"])
-def pera_wallet(request, username):
+def user_detail(request, username):
 
-    serializer = PeraSerializer(data = { "username":username})
+    serializer = UserDetailSerializer(data = { "username":username})
 
     if not serializer.is_valid():
         return Response(
             {"status": False, "message": serializer.errors},
             status.HTTP_400_BAD_REQUEST,
         )
-    pera_wallet_address = MyUser.objects.filter(username=username).values_list(
-        "pera_wallet_address", flat=True
-    )
+    user_details = MyUser.objects.filter(username=username).first()
+    serializer = BountyFreelancerSerializer(instance=user_details, many=False)
 
-    return Response({"pera_wallet_address": pera_wallet_address[0]}, status.HTTP_302_FOUND)
+    return Response({"user_details": serializer.data}, status.HTTP_200_OK)

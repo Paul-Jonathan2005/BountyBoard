@@ -21,7 +21,7 @@ from user.views import (
     LoginPerson,
     LogoutPerson,
     freelancer_rating,
-    pera_wallet,
+    user_detail,
 )
 from bounties.views import (
     bounty_types,
@@ -59,5 +59,5 @@ urlpatterns = [
     path("message/", message.as_view()),
     path("message/<int:bounty_id>", message.as_view()),
     path("rating/", freelancer_rating),
-    path("get-pera-wallet/<str:username>", pera_wallet),
+    path("get-user-details/<str:username>", user_detail),
 ]
