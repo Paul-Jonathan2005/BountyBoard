@@ -14,3 +14,4 @@ class MyUser(AbstractUser):
     age = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=10, blank=True)
     linkedin_profile_link = models.TextField(blank=True)
+    pera_wallet_address = models.TextField(blank=True)

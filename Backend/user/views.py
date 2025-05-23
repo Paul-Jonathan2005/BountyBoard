@@ -1,6 +1,13 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer, LoginSerializer, RatingSerializer
+
+from .models import MyUser
+from .serializers import (
+    RegisterSerializer,
+    LoginSerializer,
+    RatingSerializer,
+    PeraSerializer,
+)
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.contrib.auth import authenticate
@@ -82,3 +89,20 @@ def freelancer_rating(request):
     return Response(
         {"status": True, "message": "Rated Successful"}, status.HTTP_201_CREATED
     )
+
+
+@api_view(["GET"])
+def pera_wallet(request, username):
+
+    serializer = PeraSerializer(data = { "username":username})
+
+    if not serializer.is_valid():
+        return Response(
+            {"status": False, "message": serializer.errors},
+            status.HTTP_400_BAD_REQUEST,
+        )
+    pera_wallet_address = MyUser.objects.filter(username=username).values_list(
+        "pera_wallet_address", flat=True
+    )
+
+    return Response({"pera_wallet_address": pera_wallet_address[0]}, status.HTTP_302_FOUND)

@@ -14,7 +14,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "password",
-            "is_client",
             "phone_number",
             "company_name",
             "rating",
@@ -22,6 +21,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "age",
             "gender",
             "linkedin_profile_link",
+            "pera_wallet_address",
         ]
 
     def validate(self, data):
@@ -66,12 +66,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data["email"],
             phone_number=validated_data["phone_number"],
             company_name=validated_data["company_name"],
-            is_client=validated_data["is_client"],
             rating=validated_data["rating"],
             num_of_rating=validated_data["num_of_rating"],
             age=validated_data["age"],
             gender=validated_data["gender"],
             linkedin_profile_link=validated_data["linkedin_profile_link"],
+            pera_wallet_address=validated_data["pera_wallet_address"],
         )
         user.set_password(validated_data["password"])
         user.save()
@@ -136,3 +136,13 @@ class RatingSerializer(serializers.Serializer):
         user.num_of_rating += 1
         user.save()
         return validated_data
+
+
+class PeraSerializer(serializers.Serializer):
+    username = serializers.CharField()
+
+    def validate(self, data):
+        if data["username"]:
+            if not MyUser.objects.filter(username=data["username"]).exists():
+                raise serializers.ValidationError("Invalid User ID")
+        return data
