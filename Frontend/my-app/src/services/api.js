@@ -34,6 +34,9 @@ export const logoutUser = async () => {
   if (response.status === 200) {
     localStorage.removeItem('authToken');
     localStorage.removeItem('username');
+    localStorage.removeItem('walletAddress');
+    localStorage.removeItem('walletInfo');
+    localStorage.removeItem('walletInfo');
   }
   return response.data;
 };
