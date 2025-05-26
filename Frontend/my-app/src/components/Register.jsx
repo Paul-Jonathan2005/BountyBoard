@@ -22,7 +22,7 @@ function Register() {
     age: '',
     company_name: '',
     linkedin_profile_link: '',
-    para_wallet: '',
+    pera_wallet_address: '',
   });
 
   const handleChange = (e) => {
@@ -33,18 +33,18 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await registerUser(formData);
-      setAlertMessage('Registration successful!');
+      const data =  registerUser(formData);
+      setAlertMessage('awaitRegistration successful!');
       setShowAlert(true);
       setType("success")
       setTimeout(() => {
         navigate('/login');
       }, 1500);
     } catch (error) {
-          const msg = extractErrorMessage(error);
-          setAlertMessage(msg);
-          setShowAlert(true);
-          setType("error")
+      const msg = extractErrorMessage(error);
+      setAlertMessage(msg);
+      setShowAlert(true);
+      setType("error")
     }
   };
 
@@ -158,7 +158,7 @@ function Register() {
           required
           style={inputStyle}
         />
-         <input
+        <input
           type="text"
           name="company_name"
           placeholder="Company Name"
@@ -179,9 +179,9 @@ function Register() {
 
         <input
           type="text"
-          name="para_wallet"
+          name="pera_wallet_address"
           placeholder="Para Wallet Address"
-          value={formData.para_wallet}
+          value={formData.pera_wallet_address}
           onChange={handleChange}
           style={inputStyle}
         />

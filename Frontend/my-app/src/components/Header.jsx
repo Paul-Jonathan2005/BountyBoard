@@ -57,7 +57,12 @@ export default function Header() {
             <div className="header-content">
                 <div className="header-left">
                     {isLoggedIn && (
-                        <span className="username">👤 {username}</span>
+                        <span
+                          className="username clickable"
+                          onClick={() => navigate('/user-details')}
+                        >
+                          👤 {username}
+                        </span>
                     )}
                 </div>
                 <div className="header-center">
@@ -66,7 +71,7 @@ export default function Header() {
                 </div>
                 <div className="header-right">
                     {isLoggedIn && (
-                        <button onClick={handleClick}  className="logout-button" >Logout</button>
+                            <button onClick={handleClick} className="logout-button">Logout</button>
                     )}
                 </div>
             </div>
