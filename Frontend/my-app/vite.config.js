@@ -1,7 +1,10 @@
-import env_config from './src/Config.js'
+import { defineConfig } from 'vite';
+import env_config from './src/Config.js';
 
-
-export default {
+export default defineConfig({
+  define: {
+    global: 'window',
+  },
   server: {
     proxy: {
       '/api': {
@@ -11,4 +14,4 @@ export default {
       }
     }
   }
-};
+});

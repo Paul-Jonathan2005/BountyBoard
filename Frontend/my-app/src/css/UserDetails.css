@@ -1,0 +1,216 @@
+.user-page-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 120px auto 60px;
+  padding: 0 20px;
+}
+
+.user-details-container {
+  flex: 1;
+  background: linear-gradient(135deg, #f0f4f8, #ffffff);
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  padding: 40px 50px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.user-details-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 32px;
+  text-align: center;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 12px;
+}
+
+.user-details-list {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  row-gap: 24px;
+  column-gap: 28px;
+}
+
+.user-details-label {
+  font-weight: 600;
+  color: #334155;
+  text-align: right;
+  padding-right: 16px;
+  align-self: center;
+  font-size: 16px;
+}
+
+.user-details-value {
+  color: #0f172a;
+  background-color: #f8fafc;
+  padding: 12px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  align-self: center;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.user-details-value:hover {
+  background-color: #e2e8f0;
+}
+
+.user-details-value a {
+  color: #2563eb;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.user-details-value a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.pera-wallet-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+.connect-pera-button {
+  padding: 16px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Ubuntu', sans-serif;
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.25);
+}
+
+.connect-pera-button:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.35);
+  transform: translateY(-2px);
+}
+
+.connect-pera-button:active {
+  transform: scale(0.98);
+}
+
+.wallet-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 100%;
+}
+
+.wallet-details p {
+  margin: 8px 0;
+  line-height: 1.5;
+  font-family: 'Ubuntu', sans-serif;
+  word-break: break-word;
+}
+
+.wallet-info-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.algorand-logo {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+}
+
+.disconnect-wallet-button {
+  margin: 20px;
+  background-color: #dc2626;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.disconnect-wallet-button:hover {
+  background-color: #b91c1c;
+}
+
+.wallet-top-section {
+  flex: 0 0 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60%;
+  margin-bottom: 24px;
+}
+
+.wallet-balance {
+  font-size: 95px;
+  font-weight: 700;
+  color: #0f172a;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.wallet-address {
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 16px;
+  font-family: 'Ubuntu', sans-serif;
+  color: #334155;
+  word-break: break-word;
+  padding: 0 16px;
+}
+
+.wallet-bottom-section {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin-top: auto;
+}
+.rating-stars {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.rating-stars .star {
+  font-size: 28px;
+  color: #e2e8f0;
+  position: relative;
+  display: inline-block;
+}
+
+.rating-stars .star::before {
+  content: '★';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--fill, 0%);
+  height: 100%;
+  color: gold;
+  overflow: hidden;
+  display: block;
+  white-space: nowrap;
+  text-shadow:
+    0 0 3px #ffd700,
+    0 0 6px #0e0e0c,
+    0 0 8px #080808;
+}

@@ -37,3 +37,15 @@ export const logoutUser = async () => {
   }
   return response.data;
 };
+
+export const fetchUserDetails = async () => {
+  const username = localStorage.getItem('username');
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`get-user-details/${username}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.user_details;
+  
+};
