@@ -10,18 +10,21 @@
 
 .user-details-container {
   flex: 1;
-  background: linear-gradient(135deg, #f0f4f8, #ffffff);
+  /* background: linear-gradient(135deg, #f0f4f8, #ffffff); */
+  /* background: linear-gradient(135deg, #ff6a00, #ee0979); */
+    background: linear-gradient(135deg, #667eea, #764ba2);
   border: 1px solid #d1d5db;
   border-radius: 16px;
   padding: 40px 50px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
   font-family: 'Ubuntu', sans-serif;
+  max-width: 480px;
 }
 
 .user-details-title {
   font-size: 32px;
   font-weight: 700;
-  color: #1e293b;
+  color: #f7f8fa;
   margin-bottom: 32px;
   text-align: center;
   border-bottom: 2px solid #e2e8f0;
@@ -37,7 +40,7 @@
 
 .user-details-label {
   font-weight: 600;
-  color: #334155;
+  color: #f7f8f9;
   text-align: right;
   padding-right: 16px;
   align-self: center;
@@ -76,7 +79,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  /* background: #ffffff; */
+  background: linear-gradient(135deg, #36d1dc, #5b86e5);
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
