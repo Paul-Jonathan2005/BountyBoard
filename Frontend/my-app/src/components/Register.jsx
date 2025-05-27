@@ -33,8 +33,8 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data =  registerUser(formData);
-      setAlertMessage('awaitRegistration successful!');
+      const data = await registerUser(formData);
+      setAlertMessage('Registration successful!');
       setShowAlert(true);
       setType("success")
       setTimeout(() => {

@@ -1,0 +1,94 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-content form input {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  max-width: 300px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.modal-actions button[type='submit'] {
+  background-color: #10b981; /* green */
+  color: white;
+  font-family: 'Ubuntu', sans-serif;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modal-actions button[type='submit']:hover {
+  background-color: #059669;
+}
+
+.modal-actions button[type='button'] {
+  background-color: #ef4444; /* red */
+  color: white;
+  font-family: 'Ubuntu', sans-serif;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modal-actions button[type='button']:hover {
+  background-color: #dc2626;
+}
+
+.modal-content form input::placeholder {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.modal-content form input {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.modal-content {
+  background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}

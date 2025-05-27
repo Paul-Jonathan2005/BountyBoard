@@ -1,0 +1,21 @@
+.create-bounty-button {
+  position: fixed;
+  bottom: 50px;
+  right: 13px;
+  padding: 14px 24px;
+  background-color: #05481d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.create-bounty-button:hover {
+  background-color: #337237;
+}
+
