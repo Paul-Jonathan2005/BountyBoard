@@ -1,0 +1,8 @@
+.bounty-tile-list-container {
+  width: 70%;
+  margin: 40px auto;
+  padding-top: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
