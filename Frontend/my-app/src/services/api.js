@@ -16,10 +16,12 @@ export const registerUser = async (userData) => {
 
 export const loginUser = async (userData) => {
   const response = await API.post('login/', userData);
+  const user_id = response.data.user_id
   const token = response.data.token;
   if (token) {
     localStorage.setItem('authToken', token);
-    localStorage.setItem('username', userData.username)
+    localStorage.setItem('username', userData.username);
+    localStorage.setItem('userId', user_id);
   }
   return response.data;
 };
@@ -50,5 +52,53 @@ export const fetchUserDetails = async () => {
     }
   });
   return response.data.user_details;
-  
 };
+
+
+export const fetchBountyList = async (bountyType) => {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`get-client-bounties/${userId}/${bountyType}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.client_bounties;
+}; 
+
+export const fetchBountyTypes = async () => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.get('get-bounty-types/', {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.task_types;
+}; 
+
+export const fecthTaskTypeBounties = async (taskType) => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`get-bounty-types/${taskType}/get-bounties`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.bounties;
+}; 
+
+
+export const createBounty = async (bountyData) => {
+  const userId = localStorage.getItem('userId');
+  bountyData = {
+    ...bountyData,
+    client_id: userId,
+  }
+  const token = localStorage.getItem('authToken');
+  const response = await API.post('create-bounty/', bountyData, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data;
+}; 
+
