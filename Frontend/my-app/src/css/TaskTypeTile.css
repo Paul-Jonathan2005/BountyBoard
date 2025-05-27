@@ -1,0 +1,39 @@
+.task-type-tile {
+  width: 250px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Ubuntu', sans-serif;
+  color: white;
+}
+
+.gradient-bg-1 {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.gradient-bg-2 {
+  background: linear-gradient(135deg, #ff6a00, #ee0979);
+}
+
+.gradient-bg-3 {
+  background: linear-gradient(135deg, #56ab2f, #a8e063);
+}
+
+.gradient-bg-4 {
+  background: linear-gradient(135deg, #36d1dc, #5b86e5);
+}
+
+.gradient-bg-5 {
+  background: linear-gradient(135deg, #ff512f, #dd2476);
+}
+
+.gradient-bg-6 {
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+}
