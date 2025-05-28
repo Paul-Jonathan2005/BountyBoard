@@ -1,0 +1,165 @@
+.bounty-details-container {
+  max-width: 800px;
+  margin: 40px auto;
+  margin-top: 100px;
+  padding: 40px;
+  background: linear-gradient(to bottom right, #e0f2fe, #bae6fd, #7dd3fc, #38bdf8);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Ubuntu', sans-serif;
+  justify-items: center;
+}
+
+.bounty-details-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.bounty-details-description {
+  background: none;
+  padding: 20px 30px;
+  border-radius: 30px;
+  color: #111827; 
+  max-width: 660px;
+  font-size: 16px;
+  font-family: 'Ubuntu', sans-serif;
+  line-height: 1.6;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border: 1.5px solid #d1d5db; 
+  background-color: #fff; 
+}
+
+.bounty-details-description ul {
+  list-style-position: inside;
+  text-align: left !important;
+  padding-left: 24px;
+  margin: 0;
+  color: #374151; 
+}
+
+.bounty-details-description li {
+  margin-bottom: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #4b5563; 
+}
+
+.bounty-details-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 20px 0 0 0;
+  padding: 0 30px;
+}
+
+.bounty-details-type,
+.bounty-details-reward,
+.bounty-details-duration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  text-align: center;
+  padding: 8px 12px;
+  margin: 5px 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+}
+
+.bounty-details-type {
+  text-align: left;
+  background: linear-gradient(90deg, #3b82f6, #93c5fd);
+  color: white;
+  margin-left: 40px;
+}
+
+.bounty-details-reward {
+  background: linear-gradient(90deg, #f8b705fa, #fbe769);
+  color: #1e293b;
+}
+
+.bounty-details-duration {
+  text-align: right;
+  margin-right: 40px;
+  background: linear-gradient(90deg, #ff6b6b, #ffa07a);
+  color: white;
+}
+
+.request-bounty-button {
+  display: block;
+  margin: 30px auto 0 auto;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Ubuntu', sans-serif;
+  color: white;
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.request-bounty-button:hover {
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    transform: translateY(-2px);
+}
+
+.requested-bounty-button {
+    display: block;
+    margin: 30px auto 0 auto;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
+    background: linear-gradient(90deg, #2563eb, #60a5fa);
+    border: none;
+    border-radius: 8px;
+    cursor: default;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+    text-align: center;
+    pointer-events: none;
+}
+
+.bounty-requests-button {
+    display: block;
+    margin: 30px auto 0 auto;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.bounty-requests {
+    display: block;
+    margin: 30px auto 0 auto;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
+    background: linear-gradient(90deg, #2563eb, #60a5fa);
+    border: none;
+    border-radius: 8px;
+    cursor: default;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+    text-align: center;
+    pointer-events: none;
+}
