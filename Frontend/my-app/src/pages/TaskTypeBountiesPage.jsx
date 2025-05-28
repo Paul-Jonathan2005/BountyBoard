@@ -25,7 +25,7 @@ export default function TaskTypeBounties(){
      <div className='bountyType'>
       <Header />
       <Navbar />
-      <BountyTileList bountyList={taskTypeBounties} bountyType="INPROGRESS" />
+      <BountyTileList bountyList={taskTypeBounties} bountyType="INPROGRESS"  viewerType ="freelancer"/>
       <Footer />
     </div>
       

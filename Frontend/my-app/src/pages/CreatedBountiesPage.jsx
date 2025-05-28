@@ -41,7 +41,7 @@ export default function CreatedBountiesPage() {
     <div className='createdbounties'>
       <Header />
       <Navbar />
-      <BountyTileList bountyList={bounties} bountyType="INPROGRESS" />
+      <BountyTileList bountyList={bounties} bountyType="INPROGRESS" viewerType="client" />
       <button className="create-bounty-button" onClick={() => setShowForm(true)  }>
         Create Bounty
       </button>

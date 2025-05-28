@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-export default function BountyTile({ BountyDetails, bountyType }) {
+export default function BountyTile({ BountyDetails, bountyType, viewerType }) {
   const { title, task_type, amount, deadline } = BountyDetails;
   const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ export default function BountyTile({ BountyDetails, bountyType }) {
      <div className="bounty-title-row">
         <div
           className="view-button"
-          onClick={() => navigate(`/bounty/${BountyDetails.id}`)}
+          onClick={() => navigate(`/${viewerType}/bounty-details/${BountyDetails.id}`)}
           title="View Bounty"
         >
           👁️
