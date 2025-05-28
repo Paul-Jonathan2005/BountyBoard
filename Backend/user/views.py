@@ -55,12 +55,16 @@ class LoginPerson(APIView):
 
         user = serializer.validated_data["user"]
         token, _ = Token.objects.get_or_create(user=user)
+        user_id = MyUser.objects.filter(username=data["username"]).values_list(
+            "id", flat=True
+        )[0]
 
         return Response(
             {
                 "status": True,
                 "message": "Login Successful",
                 "token": str(token),
+                "user_id": user_id,
             },
             status.HTTP_202_ACCEPTED,
         )
@@ -95,7 +99,7 @@ def freelancer_rating(request):
 @api_view(["GET"])
 def user_detail(request, username):
 
-    serializer = UserDetailSerializer(data = { "username":username})
+    serializer = UserDetailSerializer(data={"username": username})
 
     if not serializer.is_valid():
         return Response(

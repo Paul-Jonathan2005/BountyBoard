@@ -259,3 +259,26 @@ class message(APIView):
         message = Chat_table.objects.filter(bounty_id=bounty_id).order_by("id")
         serializers = MessageSerializer(message, many=True)
         return Response({"status": True, "chat": serializers.data}, status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def get_bounties_details(request, bounty_id, freelancer_id):
+    bounty_details = Bounties.objects.get(id=bounty_id)
+    serializer = BountySerializer(bounty_details, many = False)
+    is_bounty_requested = (
+        Request_table.objects.filter(bounty_id=bounty_id)
+        .filter(requested_candidate_id=freelancer_id)
+        .exists()
+    )
+    # assigned_candiate_id = BountyFreelancerMap.objects.get(bounty_id =bounty_id).assigned_candidate_id
+    
+    bounty_map = BountyFreelancerMap.objects.filter(bounty_id=bounty_id).first()
+    assigned_candidate_id = bounty_map.assigned_candidate_id if bounty_map else None
+    bounty_details = {
+        **serializer.data,
+        "is_bounty_requested": is_bounty_requested,
+        "assigned_candidate_id": assigned_candidate_id
+    }
+    return Response(
+        {"status": True, "bounty_details": bounty_details}, status.HTTP_200_OK
+    )
