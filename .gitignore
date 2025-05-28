@@ -1,0 +1,4 @@
+Backend/bounties/migrations/*
+Backend/*/__pycache__/*
+Backend/*/*/__pycache__/*
+Backend/user/migrations/*
