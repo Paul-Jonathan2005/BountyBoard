@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@perawallet/connect": "^1.4.2",
+    "@txnlab/use-wallet-react": "^4.1.0",
     "axios": "^1.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
