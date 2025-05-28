@@ -197,7 +197,7 @@ def get_bounties_request(request, bounty_id):
     freelancer_details = MyUser.objects.filter(id__in=bounties_request)
     serializer = BountyFreelancerSerializer(instance=freelancer_details, many=True)
 
-    return Response({"client_bounties": serializer.data}, status.HTTP_200_OK)
+    return Response({"requested_candidates": serializer.data}, status.HTTP_200_OK)
 
 
 class accept_bounty_request(APIView):
