@@ -146,7 +146,7 @@ def get_client_bounties(request, client_id, bounty_type):
             is_amount_transfered=True
         )
 
-    sort_by = request.GET.get("sort_by", "title")
+    sort_by = request.GET.get("sort_by", "-id")
     ordering = []
     if sort_by:
         ordering = [field.strip() for field in sort_by.split(",")]

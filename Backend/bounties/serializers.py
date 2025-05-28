@@ -7,7 +7,15 @@ from .models import Bounties, Request_table, Chat_table, BountyFreelancerMap
 class GetBountySerializer(serializers.ModelSerializer):
     class Meta:
         model = Bounties
-        fields = ["title", "descrition", "deadline", "amount", "status", "id"]
+        fields = [
+            "title",
+            "descrition",
+            "deadline",
+            "task_type",
+            "amount",
+            "status",
+            "id",
+        ]
 
 
 class BountySerializer(serializers.ModelSerializer):
@@ -29,11 +37,7 @@ class CreateBountySerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Invalid DeadLine")
 
         if data["client_id"]:
-            if (
-                not MyUser.objects.filter(is_client=True)
-                .filter(id=data["client_id"].id)
-                .exists()
-            ):
+            if not MyUser.objects.filter(id=data["client_id"].id).exists():
                 raise serializers.ValidationError("Invalid Client ID")
 
         return data
