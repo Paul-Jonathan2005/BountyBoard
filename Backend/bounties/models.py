@@ -30,6 +30,7 @@ class Request_table(models.Model):
 
     bounty_id = models.ForeignKey(Bounties, on_delete=models.CASCADE)
     requested_candidate_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    candidate_pera_wallet_address = models.TextField(null=True)
 
 
 class Chat_table(models.Model):
