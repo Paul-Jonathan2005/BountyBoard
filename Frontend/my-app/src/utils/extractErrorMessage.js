@@ -1,6 +1,11 @@
 const extractErrorMessage = (error) => {
-  const data = error?.response?.data.message;
+  const data = error?.response?.data?.message || error?.message;
+
   if (!data) return 'Something went wrong';
+
+  if (typeof data === 'string') {
+    return data;
+  }
 
   return Object.entries(data)
     .map(([field, messages]) => {
