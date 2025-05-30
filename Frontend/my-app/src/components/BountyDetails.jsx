@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { fetchBountyDetails } from '../services/api';
+import { fetchBountyDetails, fetchBountyRequests} from '../services/api';
 import { useParams } from 'react-router-dom';
 import '../css/BountyDetails.css'
 import Alert from '../components/Alert';
 import extractErrorMessage from '../utils/extractErrorMessage';
 import { useNavigate } from 'react-router-dom';
 import {sendBountyRequest} from '../services/api';
+import CandidateTileList from './CandidateTileList';
 
 
 export default function BountyDetails(){
@@ -41,6 +42,14 @@ export default function BountyDetails(){
 
      const handleRequestBounty = async () => {
         try{
+          const freelancerWalletAddress = localStorage.getItem("walletAddress");
+            if (!freelancerWalletAddress) {
+                setAlertMessage('Please Connect To Pera Wallet From UserPage');
+                setShowAlert(true);
+                setType("success")
+                return;
+            }
+
             const data = await sendBountyRequest(bountyId);
             setAlertMessage('Request Submitted successfully');
             setShowAlert(true);
@@ -82,7 +91,7 @@ export default function BountyDetails(){
           </div>
         </div>
         {
-            isFreelancer && !bountyDetails.is_bounty_requested &&
+            isFreelancer && !bountyDetails.is_bounty_requested && !bountyDetails.is_assigened &&
             <button className='request-bounty-button' onClick={handleRequestBounty}>
               Request For Bounty
             </button>
@@ -92,12 +101,15 @@ export default function BountyDetails(){
             <button className='requested-bounty-button'>Requested For Bounty</button>
         }
         {
-            !isFreelancer && !bountyDetails.is_assigened && !bountyRequests &&
+            !isFreelancer && !bountyDetails.is_assigened && bountyRequests.length === 0 &&
             <button className='bounty-requests-button' onClick={getBountyRequests} >View Bounty Requests</button>
         }
         {
-            !isFreelancer && !bountyDetails.is_assigened && !bountyRequests &&
-            <button className='bounty-requests' >Bounty Requests</button>
+            !isFreelancer && !bountyDetails.is_assigened && bountyRequests.length !== 0 &&
+            <div>
+            <button className='bounty-requests' >Bounty Requests</button> 
+            <CandidateTileList candidateDetailsList={bountyRequests} setShowAlert={setShowAlert} setType={setType} setAlertMessage={setAlertMessage} reward={bountyDetails.amount} getBountyDetails={getBountyDetails}/>
+            </div>
         }
         </>
       )
