@@ -1,0 +1,46 @@
+.candidate-tile {
+  width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  margin: 20px auto;
+  background: linear-gradient(to bottom right, #e0f2fe, #f0f9ff);
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.candidate-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.candidate-profile a {
+  font-size: 16px;
+  color: #3b82f6;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.candidate-profile a:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.candidate-action button {
+  padding: 8px 16px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.candidate-action button:hover {
+  background-color: #059669;
+}
