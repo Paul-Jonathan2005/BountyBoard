@@ -1,4 +1,6 @@
 import axios from 'axios';
+import env_config from '../Config.js';
+import algosdk from 'algosdk';
 
 const API = axios.create({
   baseURL: '/api', 
@@ -77,6 +79,17 @@ export const fetchBountyList = async (bountyType) => {
   return response.data.client_bounties;
 }; 
 
+export const fetchFreelancerBountyList = async (bountyType) => {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`get-freelancer-bounties/${userId}/${bountyType}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.freelancer_bounties;
+}; 
+
 export const fetchBountyTypes = async () => {
   const token = localStorage.getItem('authToken');
   const response = await API.get('get-bounty-types/', {
@@ -124,10 +137,12 @@ export const createBounty = async (bountyData) => {
 }; 
 
 export const sendBountyRequest = async (bountyId) => {
+  const freelancerAddress = localStorage.getItem("walletAddress");
   const userId = localStorage.getItem('userId');
   const requestData = {
     requested_candidate_id: userId,
     bounty_id: bountyId,
+    candidate_pera_wallet_address: freelancerAddress,
   }
   const token = localStorage.getItem('authToken');
   const response = await API.post('request-bounty/', requestData, {
@@ -138,3 +153,67 @@ export const sendBountyRequest = async (bountyId) => {
   return response.data;
 }; 
 
+export const acceptBountyRequest = async (bountyId, candidateId) => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.post('accept-bounty-request/', {
+    bounty_id: bountyId,
+    requested_candidate_id: candidateId,
+  }, {
+    headers: {
+      Authorization: `Token ${token}`,
+    }
+  });
+
+  return response.data;
+};
+
+function encodeBoxKeyWithPrefix(prefix, id) {
+  const prefixBytes = new TextEncoder().encode(prefix);
+  const buffer = new ArrayBuffer(8);
+  new DataView(buffer).setBigUint64(0, BigInt(id));
+  const idBytes = new Uint8Array(buffer);
+  return new Uint8Array([...prefixBytes, ...idBytes]);
+}
+
+export const transferAlgosToSmartContracts = async (
+  bountyId,
+  rewardAmount,
+  freelancerAddress,
+  activeAddress,
+  transactionSigner,
+  algodClient
+) => {
+  const atc = new algosdk.AtomicTransactionComposer();
+  const suggestedParams = await algodClient.getTransactionParams().do();
+
+  const method = algosdk.ABIMethod.fromSignature(
+    'create_task(pay,uint64,address,address,uint64)void'
+  );
+
+  const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+    sender: activeAddress,
+    receiver: env_config.smart_contract_app_address,
+    amount: rewardAmount,
+    suggestedParams,
+  });
+
+  const boxKey = encodeBoxKeyWithPrefix("users", bountyId);
+
+  atc.addMethodCall({
+    appID: env_config.smart_contract_app_id,
+    method,
+    methodArgs: [
+      { txn: paymentTxn, signer: transactionSigner },
+      Number(bountyId),
+      activeAddress,
+      freelancerAddress,
+      rewardAmount
+    ],
+    boxes: [{ appIndex: env_config.smart_contract_app_id, name: boxKey }],
+    sender: activeAddress,
+    suggestedParams,
+    signer: transactionSigner,
+  });
+
+  const result = await atc.execute(algodClient, 4);
+}
