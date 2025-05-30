@@ -102,6 +102,7 @@ class BountyFreelancerSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
         fields = [
+            "id",
             "username",
             "first_name",
             "last_name",
