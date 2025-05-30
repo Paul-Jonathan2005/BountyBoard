@@ -7,6 +7,7 @@ import UserDetailsPage from '../pages/UserDetailsPage';
 import CreatedBountiesPage from '../pages/CreatedBountiesPage';
 import TaskTypeBountiesPage from '../pages/TaskTypeBountiesPage'
 import BountyDetailsPage from '../pages/BountyDetailsPage'
+import AssignedBountiesPage from '../pages/AssignedBountiesPage';
 
 export default function AppRoutes() {
   return (
@@ -18,6 +19,7 @@ export default function AppRoutes() {
       <Route path="/user-details" element={<UserDetailsPage />} />
       <Route path="/:viewerType/bounty-details/:bountyId" element={<BountyDetailsPage />} />
       <Route path="/client/created-bounties" element={<CreatedBountiesPage />} />
+      <Route path="/freelancer/assigned-bounties" element={<AssignedBountiesPage />} />
       <Route path="/freelancer/bounty-types" element={<BountyTypePage />} />
       <Route path="/freelancer/task-type/:taskType" element={<TaskTypeBountiesPage />} />
     </Routes>
