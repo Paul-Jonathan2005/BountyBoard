@@ -191,13 +191,21 @@ def get_bounties_request(request, bounty_id):
             status.HTTP_400_BAD_REQUEST,
         )
 
-    bounties_request = Request_table.objects.filter(bounty_id=bounty_id).values_list(
-        "requested_candidate_id", flat=True
-    )
-    freelancer_details = MyUser.objects.filter(id__in=bounties_request)
+    bounties_requests = Request_table.objects.filter(bounty_id=bounty_id)
+    freelancer_address_map = {
+        req.requested_candidate_id.id: req.candidate_pera_wallet_address for req in bounties_requests
+    }
+    bounty_request_ids = freelancer_address_map.keys()
+    freelancer_details = MyUser.objects.filter(id__in=bounty_request_ids)
     serializer = BountyFreelancerSerializer(instance=freelancer_details, many=True)
 
-    return Response({"requested_candidates": serializer.data}, status.HTTP_200_OK)
+    data_with_wallets = []
+    for user in serializer.data:
+        user_id = user["id"]
+        user["wallet_address"] = freelancer_address_map.get(user_id, "")
+        data_with_wallets.append(user)
+
+    return Response({"requested_candidates": data_with_wallets}, status.HTTP_200_OK)
 
 
 class accept_bounty_request(APIView):
@@ -273,7 +281,7 @@ def get_bounties_details(request, bounty_id, freelancer_id):
     # assigned_candiate_id = BountyFreelancerMap.objects.get(bounty_id =bounty_id).assigned_candidate_id
     
     bounty_map = BountyFreelancerMap.objects.filter(bounty_id=bounty_id).first()
-    assigned_candidate_id = bounty_map.assigned_candidate_id if bounty_map else None
+    assigned_candidate_id = bounty_map.assigned_candidate_id.id if bounty_map else None
     bounty_details = {
         **serializer.data,
         "is_bounty_requested": is_bounty_requested,
