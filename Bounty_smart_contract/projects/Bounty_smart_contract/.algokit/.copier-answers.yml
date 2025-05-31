@@ -1,0 +1,10 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 1.6.0
+_src_path: gh:algorandfoundation/algokit-python-template
+author_email: kakani.jonathan@gmail.com
+author_name: Paul-Jonathan2005
+contract_name: bounty_contract_app
+deployment_language: python
+preset_name: production
+project_name: Bounty_smart_contract
+
