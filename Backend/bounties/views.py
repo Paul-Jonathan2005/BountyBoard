@@ -266,7 +266,16 @@ class message(APIView):
             )
         message = Chat_table.objects.filter(bounty_id=bounty_id).order_by("id")
         serializers = MessageSerializer(message, many=True)
-        return Response({"status": True, "chat": serializers.data}, status.HTTP_200_OK)
+        user_ids = set([msg["user"] for msg in serializers.data])
+        users = MyUser.objects.filter(id__in=user_ids)
+        user_map = {user.id: user.username for user in users}
+        
+        enriched_messages = []
+        for msg in serializers.data:
+            msg["username"] = user_map.get(msg["user"], "Unknown")
+            enriched_messages.append(msg)
+            
+        return Response({"status": True, "chat": enriched_messages}, status.HTTP_200_OK)
 
 
 @api_view(["GET"])
