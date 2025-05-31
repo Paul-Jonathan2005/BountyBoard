@@ -1,0 +1,206 @@
+#pragma version 10
+#pragma typetrack false
+
+// smart_contracts.bounty_contract_app.contract.TaskBountyContract.__algopy_entrypoint_with_init() -> uint64:
+main:
+    intcblock 1 0
+    bytecblock "users"
+    // smart_contracts/bounty_contract_app/contract.py:11
+    // class TaskBountyContract(ARC4Contract):
+    txn NumAppArgs
+    bz main_bare_routing@7
+    pushbytess 0x0a54f2c3 0xd2c4b263 // method "create_task(pay,uint64,address,address,uint64)void", method "release_reward(uint64,address)uint64"
+    txna ApplicationArgs 0
+    match main_create_task_route@5 main_release_reward_route@6
+
+main_after_if_else@9:
+    // smart_contracts/bounty_contract_app/contract.py:11
+    // class TaskBountyContract(ARC4Contract):
+    intc_1 // 0
+    return
+
+main_release_reward_route@6:
+    // smart_contracts/bounty_contract_app/contract.py:33
+    // @arc4.abimethod
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/bounty_contract_app/contract.py:11
+    // class TaskBountyContract(ARC4Contract):
+    txna ApplicationArgs 1
+    txna ApplicationArgs 2
+    // smart_contracts/bounty_contract_app/contract.py:33
+    // @arc4.abimethod
+    callsub release_reward
+    itob
+    pushbytes 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_create_task_route@5:
+    // smart_contracts/bounty_contract_app/contract.py:17
+    // @arc4.abimethod
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/bounty_contract_app/contract.py:11
+    // class TaskBountyContract(ARC4Contract):
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    txna ApplicationArgs 1
+    txna ApplicationArgs 2
+    txna ApplicationArgs 3
+    txna ApplicationArgs 4
+    // smart_contracts/bounty_contract_app/contract.py:17
+    // @arc4.abimethod
+    callsub create_task
+    intc_0 // 1
+    return
+
+main_bare_routing@7:
+    // smart_contracts/bounty_contract_app/contract.py:11
+    // class TaskBountyContract(ARC4Contract):
+    txn OnCompletion
+    bnz main_after_if_else@9
+    txn ApplicationID
+    !
+    assert // can only call when creating
+    intc_0 // 1
+    return
+
+
+// smart_contracts.bounty_contract_app.contract.TaskBountyContract.create_task(payment_txn: uint64, task_id: bytes, company: bytes, freelancer: bytes, reward: bytes) -> void:
+create_task:
+    // smart_contracts/bounty_contract_app/contract.py:17-18
+    // @arc4.abimethod
+    // def create_task(self, payment_txn: gtxn.PaymentTransaction ,task_id: arc4.UInt64, company: arc4.Address, freelancer: arc4.Address, reward: arc4.UInt64) -> None:
+    proto 5 0
+    // smart_contracts/bounty_contract_app/contract.py:19-21
+    // # Check payment is in group txn 0
+    // # payment_txn = gtxn.PaymentTransaction(0)
+    // assert payment_txn.receiver == Global.current_application_address
+    frame_dig -5
+    gtxns Receiver
+    global CurrentApplicationAddress
+    ==
+    assert
+    // smart_contracts/bounty_contract_app/contract.py:22
+    // assert payment_txn.amount == reward.native
+    frame_dig -5
+    gtxns Amount
+    frame_dig -1
+    btoi
+    ==
+    assert
+    // smart_contracts/bounty_contract_app/contract.py:23
+    // assert payment_txn.sender == company.native
+    frame_dig -5
+    gtxns Sender
+    frame_dig -3
+    ==
+    assert
+    // smart_contracts/bounty_contract_app/contract.py:25-30
+    // # Save task data in a box
+    // task_data = TaskData(
+    //     company=company,
+    //     freelancer=freelancer,
+    //     reward=reward,
+    // )
+    frame_dig -3
+    frame_dig -2
+    concat
+    frame_dig -1
+    concat
+    // smart_contracts/bounty_contract_app/contract.py:31
+    // self.box_map_struct[task_id] = task_data
+    bytec_0 // "users"
+    frame_dig -4
+    concat
+    swap
+    box_put
+    retsub
+
+
+// smart_contracts.bounty_contract_app.contract.TaskBountyContract.release_reward(task_id: bytes, caller: bytes) -> uint64:
+release_reward:
+    // smart_contracts/bounty_contract_app/contract.py:33-34
+    // @arc4.abimethod
+    // def release_reward(self, task_id: arc4.UInt64, caller: arc4.Address) -> UInt64:
+    proto 2 1
+    // smart_contracts/bounty_contract_app/contract.py:35
+    // task_data = self.box_map_struct[task_id]
+    bytec_0 // "users"
+    frame_dig -2
+    concat
+    dup
+    box_get
+    assert // check self.box_map_struct entry exists
+    // smart_contracts/bounty_contract_app/contract.py:36
+    // assert caller == task_data.company, "Only company can release"
+    dup
+    extract 0 32 // on error: Index access is out of bounds
+    frame_dig -1
+    ==
+    assert // Only company can release
+    // smart_contracts/bounty_contract_app/contract.py:38-43
+    // result = itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=task_data.freelancer.native,
+    //     amount=task_data.reward.native,
+    //     fee=0
+    // ).submit()
+    itxn_begin
+    // smart_contracts/bounty_contract_app/contract.py:39
+    // sender=Global.current_application_address,
+    global CurrentApplicationAddress
+    // smart_contracts/bounty_contract_app/contract.py:40
+    // receiver=task_data.freelancer.native,
+    dig 1
+    extract 32 32 // on error: Index access is out of bounds
+    // smart_contracts/bounty_contract_app/contract.py:41
+    // amount=task_data.reward.native,
+    uncover 2
+    pushint 64 // 64
+    extract_uint64
+    itxn_field Amount
+    itxn_field Receiver
+    itxn_field Sender
+    // smart_contracts/bounty_contract_app/contract.py:38
+    // result = itxn.Payment(
+    intc_0 // pay
+    itxn_field TypeEnum
+    // smart_contracts/bounty_contract_app/contract.py:42
+    // fee=0
+    intc_1 // 0
+    itxn_field Fee
+    // smart_contracts/bounty_contract_app/contract.py:38-43
+    // result = itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=task_data.freelancer.native,
+    //     amount=task_data.reward.native,
+    //     fee=0
+    // ).submit()
+    itxn_submit
+    itxn Amount
+    // smart_contracts/bounty_contract_app/contract.py:46-47
+    // # Optionally delete the task box
+    // del self.box_map_struct[task_id]
+    swap
+    box_del
+    pop
+    // smart_contracts/bounty_contract_app/contract.py:49
+    // return result.amount
+    retsub
