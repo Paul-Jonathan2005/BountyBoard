@@ -120,6 +120,34 @@ export const fetchBountyRequests = async (bountyId) => {
   return response.data.requested_candidates;
 }; 
 
+export const fetchMessages = async (bountyId) => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`message/${bountyId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.chat;
+}; 
+
+export const postChatMessage = async (formData, bountyId) => {
+  const token = localStorage.getItem('authToken');
+  const userId = localStorage.getItem('userId');
+  const payLoad = {
+    bounty_id: bountyId,
+    user: userId,
+    message: formData.chat,
+    created_time: new Date().toISOString(),
+  }
+  const response = await API.post(`message/`, payLoad, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+
+  });
+  return response.data;
+}; 
+
 
 export const createBounty = async (bountyData) => {
   const userId = localStorage.getItem('userId');
