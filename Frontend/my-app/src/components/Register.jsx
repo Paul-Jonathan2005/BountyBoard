@@ -22,7 +22,6 @@ function Register() {
     age: '',
     company_name: '',
     linkedin_profile_link: '',
-    pera_wallet_address: '',
   });
 
   const handleChange = (e) => {
@@ -177,14 +176,6 @@ function Register() {
           style={inputStyle}
         />
 
-        <input
-          type="text"
-          name="pera_wallet_address"
-          placeholder="Para Wallet Address"
-          value={formData.pera_wallet_address}
-          onChange={handleChange}
-          style={inputStyle}
-        />
         <button
           type="submit"
           style={{
