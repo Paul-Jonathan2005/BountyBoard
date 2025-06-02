@@ -287,15 +287,42 @@ def get_bounties_details(request, bounty_id, freelancer_id):
         .filter(requested_candidate_id=freelancer_id)
         .exists()
     )
-    # assigned_candiate_id = BountyFreelancerMap.objects.get(bounty_id =bounty_id).assigned_candidate_id
     
     bounty_map = BountyFreelancerMap.objects.filter(bounty_id=bounty_id).first()
     assigned_candidate_id = bounty_map.assigned_candidate_id.id if bounty_map else None
     bounty_details = {
         **serializer.data,
         "is_bounty_requested": is_bounty_requested,
-        "assigned_candidate_id": assigned_candidate_id
+        "assigned_candidate_id": assigned_candidate_id,
     }
     return Response(
         {"status": True, "bounty_details": bounty_details}, status.HTTP_200_OK
     )
+
+@api_view(["POST"])
+def accept_submission_link(request, bounty_id):
+    data = request.data
+    bounty = Bounties.objects.get(id=bounty_id)
+    bounty.final_submission_link = data["finalSubmissionLink"]
+    bounty.is_completed = True
+    bounty.save()
+    return Response(
+            {
+                "status": True,
+                "message": "Final Submission Link Accepted Successfullly",
+            },
+            status.HTTP_201_CREATED,
+        )
+    
+@api_view(["GET"])
+def transfer_amount(request, bounty_id):
+    bounty = Bounties.objects.get(id=bounty_id)
+    bounty.is_amount_transfered = True
+    bounty.save()
+    return Response(
+            {
+                "status": True,
+                "message": "Paid Successfullly",
+            },
+            status.HTTP_201_CREATED,
+        )
