@@ -36,6 +36,8 @@ from bounties.views import (
     transfer_amount,
     message,
     get_bounties_details,
+    accept_submission_link,
+    transfer_amount,
 )
 from django.urls import path
 
@@ -61,5 +63,7 @@ urlpatterns = [
     path("message/<int:bounty_id>", message.as_view()),
     path("rating/", freelancer_rating),
     path("get-user-details/<str:username>", user_detail),
-    path("get-bounty-details/<int:bounty_id>/<int:freelancer_id>",get_bounties_details)
+    path("get-bounty-details/<int:bounty_id>/<int:freelancer_id>",get_bounties_details),
+    path("accept-submission-link/<int:bounty_id>",accept_submission_link),
+    path("transfer-amount/<int:bounty_id>",transfer_amount)
 ]
