@@ -16,6 +16,16 @@ export const registerUser = async (userData) => {
   return response.data;
 };
 
+export const postFinalSubmissionLink = async (finalSubmission, bountyId) => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.post(`accept-submission-link/${bountyId}`, finalSubmission, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data;
+};
+
 export const loginUser = async (userData) => {
   const response = await API.post('login/', userData);
   const user_id = response.data.user_id
@@ -79,6 +89,16 @@ export const fetchBountyList = async (bountyType) => {
   return response.data.client_bounties;
 }; 
 
+export const transferAmount = async (bountyId) => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`transfer-amount/${bountyId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response;
+}; 
+
 export const fetchFreelancerBountyList = async (bountyType) => {
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('authToken');
@@ -88,6 +108,17 @@ export const fetchFreelancerBountyList = async (bountyType) => {
     }
   });
   return response.data.freelancer_bounties;
+}; 
+
+export const fetchClientBountyList = async (bountyType) => {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`get-client-bounties/${userId}/${bountyType}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.client_bounties;
 }; 
 
 export const fetchBountyTypes = async () => {
@@ -243,5 +274,37 @@ export const transferAlgosToSmartContracts = async (
     signer: transactionSigner,
   });
 
-  const result = await atc.execute(algodClient, 4);
+  await atc.execute(algodClient, 4);
+}
+
+export const transferAlgosToFreelancer = async (
+  bountyId,
+  activeAddress,
+  transactionSigner,
+  algodClient
+) =>{
+  const atc = new algosdk.AtomicTransactionComposer();
+  const suggestedParams = await algodClient.getTransactionParams().do();
+
+  const method = algosdk.ABIMethod.fromSignature(
+    'release_reward(uint64,address)void'
+  );
+  const boxKey = encodeBoxKeyWithPrefix("users", bountyId);
+  
+  atc.addMethodCall({
+      appID: env_config.smart_contract_app_id,
+      method,
+      methodArgs: [
+        Number(bountyId),
+        activeAddress,
+      ],
+      sender: activeAddress,
+      fee: 1000,
+      suggestedParams,
+      boxes: [{ appIndex: env_config.smart_contract_app_id, name: boxKey }],
+      signer: transactionSigner,
+    });
+  
+    await atc.execute(algodClient, 4);
+
 }
