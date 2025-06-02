@@ -11,7 +11,7 @@
 }
 
 .bounty-details-title {
-  font-size: 32px
+  font-size: 32px;
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 20px;
@@ -219,4 +219,85 @@
   font-size: 30px;
   font-weight: 600;
   padding: 1px 16px;
+}
+
+.submission-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 30px auto;
+  max-width: 800px;
+  padding: 16px;
+  border-top: 2px solid #d1d5db;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.submission-input {
+  width: 100%;
+  max-width: 600px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  font-family: 'Ubuntu', sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.submission-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  color: white;
+  border: none;
+  font-weight: 600;
+  font-family: 'Ubuntu', sans-serif;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.submission-button:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+.final-submission-link {
+  display: block;
+  margin: 30px auto 50px auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Ubuntu', sans-serif;
+  color: #2563eb;
+  text-decoration: none;
+  border: 2px solid #2563eb;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-align: center;
+  max-width: fit-content;
+}
+
+.final-submission-link:hover {
+  background-color: #2563eb;
+  color: white;
+}
+.pay-button {
+  display: block;
+  margin: 50px auto;
+  padding: 14px 30px;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  font-family: 'Ubuntu', sans-serif;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(34, 197, 94, 0.4);
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.pay-button:hover {
+  background: linear-gradient(90deg, #16a34a, #15803d);
+  transform: translateY(-2px);
 }

@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { fetchBountyDetails, fetchBountyRequests} from '../services/api';
-import { useParams } from 'react-router-dom';
+import { fetchBountyDetails, fetchBountyRequests, transferAmount} from '../services/api';
+import { href, useParams } from 'react-router-dom';
 import '../css/BountyDetails.css'
 import Alert from '../components/Alert';
 import extractErrorMessage from '../utils/extractErrorMessage';
 import { useNavigate } from 'react-router-dom';
-import {sendBountyRequest, fetchMessages, postChatMessage} from '../services/api';
+import {sendBountyRequest, fetchMessages, postChatMessage, postFinalSubmissionLink, transferAlgosToFreelancer} from '../services/api';
 import CandidateTileList from './CandidateTileList';
 import MessageTileList from './MessageTileList';
+import algosdk from 'algosdk';
+import { useWallet } from '@txnlab/use-wallet-react';
 
 
 export default function BountyDetails(){
@@ -18,6 +20,9 @@ export default function BountyDetails(){
     const [formData, setFormData] = useState({
           chat: '',
         });
+    const [finalSubmission, setFinalSubmission] = useState({
+          finalSubmissionLink:'',
+    });
     const isFreelancer = viewerType==="freelancer";
     const navigate = useNavigate();
     const [alertMessage, setAlertMessage] = useState('');
@@ -28,6 +33,7 @@ export default function BountyDetails(){
     const scrollToBottom = () => {
       chatEndRef.current?.scrollIntoView({ behavior: 'auto' });
     };
+    const { activeAddress, transactionSigner, algodClient } = useWallet();
 
     useEffect(() => {
       scrollToBottom();
@@ -36,6 +42,11 @@ export default function BountyDetails(){
     const handleChange = (e) => {
       const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleChangeSubmision = (e) => {
+      const { name, value } = e.target;
+        setFinalSubmission(prev => ({ ...prev, [name]: value }));
     };
 
     const getBountyDetails = async () => {
@@ -63,11 +74,58 @@ export default function BountyDetails(){
         getBountyDetails();
       }, []);
 
+    const handlePay = async(e) =>{
+      e.preventDefault();
+      try {
+        const clientWalletAddress = localStorage.getItem("walletAddress");
+        if (!clientWalletAddress) {
+          setAlertMessage('Please Connect To Pera Wallet From UserPage');
+          setShowAlert(true);
+          setType("success")
+          return;
+        }        
+          const callSmartContract = await transferAlgosToFreelancer(bountyId, activeAddress,transactionSigner, algodClient);
+          const data = await transferAmount( bountyId );
+          setAlertMessage('Paid Successfully!');
+          setShowAlert(true);
+          setType("success")
+          setTimeout(() => {
+          getBountyDetails();
+          }, 1500);
+        } catch (error) {
+          console.log(error);
+            const msg = extractErrorMessage(error);
+            setAlertMessage(msg);
+            setShowAlert(true);
+            setType("error")
+        }
+
+    };
+
+    const handleFinalSubmission = async (e) =>{
+       e.preventDefault();
+        try {
+          const data = await postFinalSubmissionLink(finalSubmission, bountyId);
+          setFinalSubmission(prev => ({ ...prev, finalSubmissionLink: '' })); 
+          setAlertMessage('Submited Successfully!');
+          setShowAlert(true);
+          setType("success")
+          setTimeout(() => {
+          getBountyDetails();
+          }, 1500);
+        } catch (error) {
+            const msg = extractErrorMessage(error);
+            setAlertMessage(msg);
+            setShowAlert(true);
+            setType("error")
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
           const data = await postChatMessage(formData, bountyId);
-          setFormData(prev => ({ ...prev, chat: '' })); 
+          setFormData(prev => ({ ...prev, chat: '' }));
           setTimeout(() => {
           getBountyDetails();
           }, 1500);
@@ -152,6 +210,7 @@ export default function BountyDetails(){
         }
         {
             bountyDetails.is_assigened  &&
+          <>
             <div className="chat-box">
               <h2 className='chat-box-header'>Chat Box</h2>
               <div className="chat-messages">
@@ -176,6 +235,47 @@ export default function BountyDetails(){
                 </button>
               </form>
             </div>
+            </>
+        }
+        {
+            isFreelancer && bountyDetails.is_assigened && !bountyDetails.is_completed &&
+            <div>
+              <form onSubmit={handleFinalSubmission} className='submission-form'>
+                <input 
+                type="url"
+                name="finalSubmissionLink" 
+                placeholder='Final Submission Link'
+                value={finalSubmission.finalSubmissionLink}
+                onChange={handleChangeSubmision}
+                requried
+                className='submission-input'
+                />
+
+                <button 
+                  type='submit'
+                  className='submission-button'
+                  disabled={!finalSubmission.finalSubmissionLink.trim()}
+                >
+                  Submit
+                </button>
+
+              </form>
+            </div>
+        }
+        {
+          bountyDetails.is_assigened && bountyDetails.is_completed &&
+          <a
+            className='final-submission-link'
+            href={bountyDetails.final_submission_link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Click here to View the Final Submission
+          </a>
+        }
+        {
+          !isFreelancer && bountyDetails.is_completed && !bountyDetails.is_amount_transfered &&
+          <button className='pay-button' onClick={handlePay}>Pay</button>
         }
         </>
       )
