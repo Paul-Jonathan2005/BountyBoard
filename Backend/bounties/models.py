@@ -18,6 +18,7 @@ class Bounties(models.Model):
     start_date = models.DateField(null=True)
     status = models.IntegerField(default=0)
     client_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    final_submission_link = models.URLField(null=True)
 
 
 class BountyFreelancerMap(models.Model):
