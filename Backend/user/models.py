@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 class MyUser(AbstractUser):
 
     is_client = models.BooleanField(default=False)
+    user_role = models.CharField(null=True)
     phone_number = models.CharField(max_length=15, blank=True)
     company_name = models.CharField(max_length=100, blank=True)
     rating = models.FloatField(default=0.0)

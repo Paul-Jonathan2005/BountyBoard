@@ -55,9 +55,9 @@ class LoginPerson(APIView):
 
         user = serializer.validated_data["user"]
         token, _ = Token.objects.get_or_create(user=user)
-        user_id = MyUser.objects.filter(username=data["username"]).values_list(
-            "id", flat=True
-        )[0]
+        user = MyUser.objects.filter(username=data["username"]).first()
+        user_id = user.id
+        user_role = user.user_role
 
         return Response(
             {
@@ -65,6 +65,7 @@ class LoginPerson(APIView):
                 "message": "Login Successful",
                 "token": str(token),
                 "user_id": user_id,
+                "user_role": user_role,
             },
             status.HTTP_202_ACCEPTED,
         )
