@@ -164,6 +164,16 @@ export const fetchBountyRequests = async (bountyId) => {
   return response.data.requested_candidates;
 }; 
 
+export const raiseDispute = async (bountyId) => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`raise-dispute/${bountyId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data;
+}; 
+
 export const fetchMessages = async (bountyId) => {
   const token = localStorage.getItem('authToken');
   const response = await API.get(`message/${bountyId}`, {
@@ -172,6 +182,16 @@ export const fetchMessages = async (bountyId) => {
     }
   });
   return response.data.chat;
+}; 
+
+export const fetchComplaints = async (bountyId) => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`complaint/${bountyId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.complaint;
 }; 
 
 export const postChatMessage = async (formData, bountyId) => {
@@ -184,6 +204,24 @@ export const postChatMessage = async (formData, bountyId) => {
     created_time: new Date().toISOString(),
   }
   const response = await API.post(`message/`, payLoad, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+
+  });
+  return response.data;
+}; 
+
+export const postComplaintMessage = async (complaintData, bountyId) => {
+  const token = localStorage.getItem('authToken');
+  const userId = localStorage.getItem('userId');
+  const payLoad = {
+    bounty_id: bountyId,
+    user: userId,
+    message: complaintData.complaint,
+    created_time: new Date().toISOString(),
+  }
+  const response = await API.post(`complaint/`, payLoad, {
     headers: {
       Authorization: `Token ${token}`
     }
@@ -218,6 +256,22 @@ export const sendBountyRequest = async (bountyId) => {
   }
   const token = localStorage.getItem('authToken');
   const response = await API.post('request-bounty/', requestData, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data;
+}; 
+
+export const sendVote = async (bountyId, voted_for) => {
+  const userId = localStorage.getItem('userId');
+  const requestData = {
+    user: userId,
+    bounty_id: bountyId,
+    voted_for: voted_for
+  }
+  const token = localStorage.getItem('authToken');
+  const response = await API.post('voting/', requestData, {
     headers: {
       Authorization: `Token ${token}`
     }
@@ -321,3 +375,75 @@ export const transferAlgosToFreelancer = async (
     await atc.execute(algodClient, 4);
 
 }
+
+
+export const startDisputeSmartContract = async (
+  bountyId,
+  activeAddress,
+  transactionSigner,
+  algodClient
+) => {
+  const atc = new algosdk.AtomicTransactionComposer();
+  const suggestedParams = await algodClient.getTransactionParams().do();
+
+  const method = algosdk.ABIMethod.fromSignature(
+    'start_appeal(uint64,address)void'
+  );
+
+  const usersBoxKey = encodeBoxKeyWithPrefix("users", bountyId);
+  const disputesBoxKey = encodeBoxKeyWithPrefix("disputes", bountyId);
+
+  atc.addMethodCall({
+    appID: env_config.smart_contract_app_id,
+    method,
+    methodArgs: [
+      Number(bountyId),
+      activeAddress,
+    ],
+    boxes: [
+    { appIndex: env_config.smart_contract_app_id, name: usersBoxKey },
+    { appIndex: env_config.smart_contract_app_id, name: disputesBoxKey },
+  ],
+    sender: activeAddress,
+    suggestedParams,
+    signer: transactionSigner,
+  });
+
+  await atc.execute(algodClient, 4);
+};
+
+export const votingSmartContract = async(
+  bountyId,
+  voted_for,
+  activeAddress,
+  transactionSigner,
+  algodClient
+) => {
+  const atc = new algosdk.AtomicTransactionComposer();
+  const suggestedParams = await algodClient.getTransactionParams().do();
+
+  const method = algosdk.ABIMethod.fromSignature(
+    'cast_vote(uint64,bool,address)void'
+  );
+  const disputesBoxKey = encodeBoxKeyWithPrefix("disputes", bountyId);
+  const vote_for_freelancer = voted_for === "FREELANCER"
+
+  atc.addMethodCall({
+    appID: env_config.smart_contract_app_id,
+    method,
+    methodArgs: [
+      Number(bountyId),
+      vote_for_freelancer,
+      activeAddress,
+    ],
+    boxes: [
+    { appIndex: env_config.smart_contract_app_id, name: disputesBoxKey },
+  ],
+    sender: activeAddress,
+    suggestedParams,
+    signer: transactionSigner,
+  });
+
+  await atc.execute(algodClient, 4);
+
+};
