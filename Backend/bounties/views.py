@@ -326,3 +326,16 @@ def transfer_amount(request, bounty_id):
             },
             status.HTTP_201_CREATED,
         )
+    
+@api_view(["GET"])
+def get_freelancer_requested_bounties(request, freelancer_id):
+    requested_bounty_ids = Request_table.objects.filter(requested_candidate_id=freelancer_id).values_list("bounty_id", flat=True)
+    requested_bounties = Bounties.objects.filter(id__in=requested_bounty_ids)
+    serializer = BountySerializer(instance=requested_bounties, many=True)
+    return Response(
+            {
+                "status": True,
+                "requestedBounties": serializer.data,
+            },
+            status.HTTP_200_OK,
+        )
