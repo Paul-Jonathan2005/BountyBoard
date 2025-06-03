@@ -79,11 +79,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* background: #ffffff; */
-  background: linear-gradient(135deg, #36d1dc, #5b86e5);
+  background: linear-gradient(135deg, #2f80ed, #56ccf2);
   border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  padding: 60px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  transition: background 0.4s ease;
 }
 
 .connect-pera-button {
@@ -133,8 +134,8 @@
 }
 
 .algorand-logo {
-  width: 160px;
-  height: 160px;
+  width: 120px;
+  height: 120px;
   object-fit: contain;
 }
 
@@ -166,9 +167,9 @@
 }
 
 .wallet-balance {
-  font-size: 95px;
+  font-size: 80px;
   font-weight: 700;
-  color: #0f172a;
+  color: #f8f8f4;
   font-family: 'Ubuntu', sans-serif;
 }
 
@@ -178,7 +179,7 @@
   text-align: center;
   margin-bottom: 16px;
   font-family: 'Ubuntu', sans-serif;
-  color: #334155;
+  color: #000508;
   word-break: break-word;
   padding: 0 16px;
 }

@@ -9,7 +9,7 @@ from rest_framework import serializers
 
 from user.models import MyUser
 from user.serializers import BountyFreelancerSerializer
-from .models import Bounties, BountyFreelancerMap, Chat_table, Request_table
+from .models import Bounties, BountyFreelancerMap, Chat_table, Request_table, Dispute_messages_table, Voting_table
 from .serializers import (
     AcceptBountySerializer,
     GetBountySerializer,
@@ -17,9 +17,11 @@ from .serializers import (
     BountySerializer,
     CreateBountySerializer,
     MessageSerializer,
+    ComplaintSerializer,
+    voteBountySerializer,
 )
 
-from datetime import date
+from datetime import date, timedelta, datetime
 from dateutil.relativedelta import relativedelta
 
 
@@ -278,6 +280,43 @@ class message(APIView):
         return Response({"status": True, "chat": enriched_messages}, status.HTTP_200_OK)
 
 
+class Complaint_chat(APIView):
+    def post(self, request):
+        data = request.data
+        serializer = ComplaintSerializer(data=data)
+
+        if not serializer.is_valid():
+            return Response(
+                {"status": False, "message": serializer.errors},
+                status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer.save()
+        return Response(
+            {"status": True, "message": "Complaint saved successfully"},
+            status.HTTP_201_CREATED,
+        )
+
+    def get(self, request, bounty_id):
+        if not bounty_id:
+            return Response(
+                {"status": False, "message": "Bounty_id is Required"},
+                status.HTTP_400_BAD_REQUEST,
+            )
+        message = Dispute_messages_table.objects.filter(bounty_id=bounty_id).order_by("id")
+        serializers = ComplaintSerializer(message, many=True)
+        user_ids = set([msg["user"] for msg in serializers.data])
+        users = MyUser.objects.filter(id__in=user_ids)
+        user_map = {user.id: user.username for user in users}
+        
+        enriched_messages = []
+        for msg in serializers.data:
+            msg["username"] = user_map.get(msg["user"], "Unknown")
+            enriched_messages.append(msg)
+            
+        return Response({"status": True, "complaint": enriched_messages}, status.HTTP_200_OK)
+
+
 @api_view(["GET"])
 def get_bounties_details(request, bounty_id, freelancer_id):
     bounty_details = Bounties.objects.get(id=bounty_id)
@@ -290,10 +329,14 @@ def get_bounties_details(request, bounty_id, freelancer_id):
     
     bounty_map = BountyFreelancerMap.objects.filter(bounty_id=bounty_id).first()
     assigned_candidate_id = bounty_map.assigned_candidate_id.id if bounty_map else None
+    
+    vote = Voting_table.objects.filter(bounty_id=bounty_id).filter(user=freelancer_id).first() 
+    voted_for = vote.voted_for if vote else None
     bounty_details = {
         **serializer.data,
         "is_bounty_requested": is_bounty_requested,
         "assigned_candidate_id": assigned_candidate_id,
+        "voted_for" : voted_for,
     }
     return Response(
         {"status": True, "bounty_details": bounty_details}, status.HTTP_200_OK
@@ -313,6 +356,26 @@ def accept_submission_link(request, bounty_id):
             },
             status.HTTP_201_CREATED,
         )
+
+@api_view(["POST"])
+def voting(request):
+    data = request.data
+    serializer = voteBountySerializer(data=data)
+
+    if not serializer.is_valid():
+        return Response(
+            {"status": False, "message": serializer.errors},
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    serializer.save()
+    return Response(
+        {
+            "status": True,
+            "message": "Vote Submitted Successfullly",
+        },
+        status.HTTP_201_CREATED,
+    )
     
 @api_view(["GET"])
 def transfer_amount(request, bounty_id):
@@ -323,6 +386,20 @@ def transfer_amount(request, bounty_id):
             {
                 "status": True,
                 "message": "Paid Successfullly",
+            },
+            status.HTTP_201_CREATED,
+        )
+    
+@api_view(["GET"])
+def raise_bounty_dispute(request, bounty_id):
+    bounty = Bounties.objects.get(id=bounty_id)
+    bounty.is_disputed = True
+    bounty.dispute_end_data = (datetime.now() + timedelta(days=3)).isoformat()
+    bounty.save()
+    return Response(
+            {
+                "status": True,
+                "message": "Dispute Raised Successfullly",
             },
             status.HTTP_201_CREATED,
         )

@@ -283,7 +283,7 @@
 }
 .pay-button {
   display: block;
-  margin: 50px auto;
+  margin: 30px auto;
   padding: 14px 30px;
   background: linear-gradient(90deg, #22c55e, #16a34a);
   color: white;
@@ -300,4 +300,81 @@
 .pay-button:hover {
   background: linear-gradient(90deg, #16a34a, #15803d);
   transform: translateY(-2px);
+}
+
+.dispute-button {
+  background: linear-gradient(to right, #ff4e50, #f44336); 
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 20px auto 40px;
+  margin-bottom: 50px;
+  display: block;
+  width: fit-content;
+  transition: background 0.3s ease;
+  box-shadow: 0 4px 10px rgba(255, 0, 0, 0.2);
+}
+
+.dispute-button:hover {
+  background: linear-gradient(to right, #ff3b3f, #d32f2f);
+}
+.vote-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 40px auto 10px auto;
+  padding-bottom: 20px;
+}
+
+.vote-button {
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Ubuntu', sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  margin-bottom: 30px;
+}
+
+.vote-freelancer-button {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  color: white;
+}
+
+.vote-freelancer-button:hover {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  transform: translateY(-2px);
+}
+
+.vote-client-button {
+  background: linear-gradient(90deg, #f97316, #fbbf24);
+  color: white;
+}
+
+.vote-client-button:hover {
+  background: linear-gradient(90deg, #ea580c, #f59e0b);
+  transform: translateY(-2px);
+}
+
+.voted-button {
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Ubuntu', sans-serif;
+  border: none;
+  background: #d1d5db;
+  color: #1f2937;
+  cursor: default;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  pointer-events: none;
+  margin-bottom: 30px;
 }

@@ -12,6 +12,8 @@ class DisputeData(arc4.Struct, frozen=False):
     freelancer_votes: arc4.UInt64
     company_votes: arc4.UInt64
     is_open: arc4.Bool
+    voters: arc4.DynamicArray[arc4.Address]
+    reward: arc4.UInt64
 
 
 class TaskBountyContract(ARC4Contract):
@@ -62,46 +64,93 @@ class TaskBountyContract(ARC4Contract):
     def start_appeal(self, task_id: arc4.UInt64, caller: arc4.Address) -> None:
         task_data = self.box_map_struct[task_id]
         assert caller == task_data.company or caller == task_data.freelancer
-        assert not self.dispute_box.exists(task_id)
+        assert task_id not in self.dispute_box
         self.dispute_box[task_id] = DisputeData(
-            freelancer_votes=arc4.UInt64(0), company_votes=arc4.UInt64(0), is_open=True
+            freelancer_votes=arc4.UInt64(0),
+            company_votes=arc4.UInt64(0),
+            is_open=arc4.Bool(True),
+            voters=arc4.DynamicArray[arc4.Address](),
+            reward=task_data.reward
         )
 
     @arc4.abimethod
-    def cast_vote(self, task_id: arc4.UInt64, vote_for_freelancer: arc4.Bool) -> None:
-        dispute = self.dispute_box[task_id]
+    def cast_vote(self, task_id: arc4.UInt64, vote_for_freelancer: arc4.Bool, caller: arc4.Address) -> None:
+        dispute = self.dispute_box[task_id].copy()
         assert dispute.is_open
+        # assert caller not in dispute.voters, "Already Voted"
+        found = False
+        for voter in dispute.voters:
+            if caller == voter:
+                found = True
+                break
+        assert not found, "Already voted"
+        
         if vote_for_freelancer:
-            dispute.freelancer_votes += arc4.UInt64(1)
+            dispute.freelancer_votes = arc4.UInt64(dispute.freelancer_votes.native + 1)
         else:
-            dispute.company_votes += arc4.UInt64(1)
-        self.dispute_box[task_id] = dispute
+            dispute.company_votes = arc4.UInt64(dispute.company_votes.native + 1)
+            
+        found = False
+        for voter in dispute.voters:
+            if caller == voter:
+                found = True
+                break
+        
+        if not found:
+            dispute.voters.append(caller)
+        self.dispute_box[task_id] = dispute.copy()
 
     @arc4.abimethod
     def resolve_dispute(self, task_id: arc4.UInt64) -> UInt64:
         task_data = self.box_map_struct[task_id]
-        dispute = self.dispute_box[task_id]
+        dispute = self.dispute_box[task_id].copy()
         assert dispute.is_open
 
-        dispute.is_open = False
-        self.dispute_box[task_id] = dispute
+        dispute.is_open = arc4.Bool(False)
+        self.dispute_box[task_id] = dispute.copy()
 
-        if dispute.freelancer_votes > dispute.company_votes:
+        voter_reward_pool = arc4.UInt64(dispute.reward.native // 10)
+        reward_to_winner = arc4.UInt64(dispute.reward.native - voter_reward_pool.native)
+
+        if dispute.freelancer_votes.native < dispute.company_votes.native:
             result = itxn.Payment(
                 sender=Global.current_application_address,
                 receiver=task_data.freelancer.native,
-                amount=task_data.reward.native,
+                amount=reward_to_winner.native,
                 fee=0,
             ).submit()
         else:
             result = itxn.Payment(
                 sender=Global.current_application_address,
                 receiver=task_data.company.native,
-                amount=task_data.reward.native,
+                amount=reward_to_winner.native,
                 fee=0,
             ).submit()
 
         del self.box_map_struct[task_id]
-        del self.dispute_box[task_id]
+
+        return result.amount
+
+    @arc4.abimethod
+    def claim_voting_reward(self, task_id: arc4.UInt64, caller: arc4.Address) -> UInt64:
+        dispute = self.dispute_box[task_id].copy()
+        voters = dispute.voters.copy()
+        # assert caller in voters, "Not a voter"
+        found = False
+        for voter in voters:
+            if caller == voter:
+                found = True
+                break
+        assert found, "Not a voter"
+
+        total_reward = arc4.UInt64(dispute.reward.native // 10)
+        share = arc4.UInt64(total_reward.native // voters.length)
+
+        result = itxn.Payment(
+            sender=Global.current_application_address,
+            receiver=caller.native,
+            amount=share.native,
+            fee=0
+        ).submit()
 
         return result.amount

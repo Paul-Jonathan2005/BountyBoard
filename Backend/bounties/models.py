@@ -19,6 +19,8 @@ class Bounties(models.Model):
     status = models.IntegerField(default=0)
     client_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     final_submission_link = models.URLField(null=True)
+    is_disputed = models.BooleanField(default=False, null=True)
+    dispute_end_data = models.DateTimeField(null=True)
 
 
 class BountyFreelancerMap(models.Model):
@@ -40,3 +42,18 @@ class Chat_table(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     message = models.TextField()
     created_time = models.DateTimeField()
+
+
+class Dispute_messages_table(models.Model):
+
+    bounty_id = models.ForeignKey(Bounties, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    message = models.TextField()
+    created_time = models.DateTimeField()
+
+
+class Voting_table(models.Model):
+
+    bounty_id = models.ForeignKey(Bounties, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    voted_for = models.TextField(null=True)
