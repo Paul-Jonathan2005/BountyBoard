@@ -66,3 +66,13 @@ class TaskBountyContract(ARC4Contract):
         self.dispute_box[task_id] = DisputeData(
             freelancer_votes=arc4.UInt64(0), company_votes=arc4.UInt64(0), is_open=True
         )
+
+    @arc4.abimethod
+    def cast_vote(self, task_id: arc4.UInt64, vote_for_freelancer: arc4.Bool) -> None:
+        dispute = self.dispute_box[task_id]
+        assert dispute.is_open
+        if vote_for_freelancer:
+            dispute.freelancer_votes += arc4.UInt64(1)
+        else:
+            dispute.company_votes += arc4.UInt64(1)
+        self.dispute_box[task_id] = dispute
