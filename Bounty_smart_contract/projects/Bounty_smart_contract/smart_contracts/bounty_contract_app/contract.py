@@ -8,10 +8,17 @@ class TaskData(arc4.Struct, frozen=True):
     reward: arc4.UInt64
 
 
+class DisputeData(arc4.Struct, frozen=False):
+    freelancer_votes: arc4.UInt64
+    company_votes: arc4.UInt64
+    is_open: arc4.Bool
+
+
 class TaskBountyContract(ARC4Contract):
 
     def __init__(self) -> None:
         self.box_map_struct = BoxMap(arc4.UInt64, TaskData, key_prefix="users")
+        self.dispute_box = BoxMap(arc4.UInt64, DisputeData, key_prefix="disputes")
 
     @arc4.abimethod
     def create_task(
@@ -22,8 +29,6 @@ class TaskBountyContract(ARC4Contract):
         freelancer: arc4.Address,
         reward: arc4.UInt64,
     ) -> None:
-        # Check payment is in group txn 0
-        # payment_txn = gtxn.PaymentTransaction(0)
         assert payment_txn.receiver == Global.current_application_address
         assert payment_txn.amount == reward.native
         assert payment_txn.sender == company.native
@@ -52,3 +57,12 @@ class TaskBountyContract(ARC4Contract):
         del self.box_map_struct[task_id]
 
         return result.amount
+
+    @arc4.abimethod
+    def start_appeal(self, task_id: arc4.UInt64, caller: arc4.Address) -> None:
+        task_data = self.box_map_struct[task_id]
+        assert caller == task_data.company or caller == task_data.freelancer
+        assert not self.dispute_box.exists(task_id)
+        self.dispute_box[task_id] = DisputeData(
+            freelancer_votes=arc4.UInt64(0), company_votes=arc4.UInt64(0), is_open=True
+        )
