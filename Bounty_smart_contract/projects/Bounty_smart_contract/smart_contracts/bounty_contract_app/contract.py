@@ -76,3 +76,32 @@ class TaskBountyContract(ARC4Contract):
         else:
             dispute.company_votes += arc4.UInt64(1)
         self.dispute_box[task_id] = dispute
+
+    @arc4.abimethod
+    def resolve_dispute(self, task_id: arc4.UInt64) -> UInt64:
+        task_data = self.box_map_struct[task_id]
+        dispute = self.dispute_box[task_id]
+        assert dispute.is_open
+
+        dispute.is_open = False
+        self.dispute_box[task_id] = dispute
+
+        if dispute.freelancer_votes > dispute.company_votes:
+            result = itxn.Payment(
+                sender=Global.current_application_address,
+                receiver=task_data.freelancer.native,
+                amount=task_data.reward.native,
+                fee=0,
+            ).submit()
+        else:
+            result = itxn.Payment(
+                sender=Global.current_application_address,
+                receiver=task_data.company.native,
+                amount=task_data.reward.native,
+                fee=0,
+            ).submit()
+
+        del self.box_map_struct[task_id]
+        del self.dispute_box[task_id]
+
+        return result.amount
