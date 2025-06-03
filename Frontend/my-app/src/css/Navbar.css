@@ -59,3 +59,14 @@
 .submenu li:hover {
   background-color: #1f2937;
 }
+
+.submenu li.active a {
+  color: #ffffff;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.submenu li.active {
+  background-color: #334155;
+  border-radius: 5px;
+}
