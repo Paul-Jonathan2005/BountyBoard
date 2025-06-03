@@ -61,7 +61,7 @@ export default function Header() {
                           className="username clickable"
                           onClick={() => navigate('/user-details')}
                         >
-                          👤 {username}
+                          🧑‍💼 {username}
                         </span>
                     )}
                 </div>

@@ -29,11 +29,13 @@ export const postFinalSubmissionLink = async (finalSubmission, bountyId) => {
 export const loginUser = async (userData) => {
   const response = await API.post('login/', userData);
   const user_id = response.data.user_id
+  const user_role = response.data.user_role
   const token = response.data.token;
   if (token) {
     localStorage.setItem('authToken', token);
     localStorage.setItem('username', userData.username);
     localStorage.setItem('userId', user_id);
+    localStorage.setItem('userRole', user_role);
   }
   return response.data;
 };
@@ -119,6 +121,17 @@ export const fetchClientBountyList = async (bountyType) => {
     }
   });
   return response.data.client_bounties;
+}; 
+
+export const fetchFreelancerBounties = async () => {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`get-requested-bounties/${userId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.requestedBounties;
 }; 
 
 export const fetchBountyTypes = async () => {
@@ -287,7 +300,7 @@ export const transferAlgosToFreelancer = async (
   const suggestedParams = await algodClient.getTransactionParams().do();
 
   const method = algosdk.ABIMethod.fromSignature(
-    'release_reward(uint64,address)void'
+    'release_reward(uint64,address)uint64'
   );
   const boxKey = encodeBoxKeyWithPrefix("users", bountyId);
   
@@ -299,7 +312,7 @@ export const transferAlgosToFreelancer = async (
         activeAddress,
       ],
       sender: activeAddress,
-      fee: 1000,
+      fee: 4000,
       suggestedParams,
       boxes: [{ appIndex: env_config.smart_contract_app_id, name: boxKey }],
       signer: transactionSigner,
