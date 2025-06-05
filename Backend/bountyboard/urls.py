@@ -42,6 +42,9 @@ from bounties.views import (
     raise_bounty_dispute,
     Complaint_chat,
     voting,
+    delete_vote,
+    get_reward_bounties,
+    get_disputed_bounties,
 )
 from django.urls import path
 
@@ -69,12 +72,15 @@ urlpatterns = [
     path("complaint/<int:bounty_id>", Complaint_chat.as_view()),
     path("rating/", freelancer_rating),
     path("voting/", voting),
+    path("vote-delete/<int:bounty_id>/<int:user_id>", delete_vote),
     path("get-user-details/<str:username>", user_detail),
     path(
         "get-bounty-details/<int:bounty_id>/<int:freelancer_id>", get_bounties_details
     ),
     path("accept-submission-link/<int:bounty_id>", accept_submission_link),
-    path("transfer-amount/<int:bounty_id>", transfer_amount),
+    path("transfer-amount/<str:is_freelancer>/<int:bounty_id>", transfer_amount),
     path("raise-dispute/<int:bounty_id>", raise_bounty_dispute),
     path("get-requested-bounties/<int:freelancer_id>", get_freelancer_requested_bounties),
+    path("get-disputed-bounties/<int:user_id>", get_disputed_bounties),
+    path("get-reward-bounties/<int:user_id>", get_reward_bounties),
 ]
