@@ -91,9 +91,9 @@ export const fetchBountyList = async (bountyType) => {
   return response.data.client_bounties;
 }; 
 
-export const transferAmount = async (bountyId) => {
+export const transferAmount = async ( isFreelancer ,bountyId) => {
   const token = localStorage.getItem('authToken');
-  const response = await API.get(`transfer-amount/${bountyId}`, {
+  const response = await API.get(`transfer-amount/${isFreelancer}/${bountyId}`, {
     headers: {
       Authorization: `Token ${token}`
     }
@@ -123,6 +123,17 @@ export const fetchClientBountyList = async (bountyType) => {
   return response.data.client_bounties;
 }; 
 
+export const deleteVote = async (bountyId) => {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('authToken');
+  const response = await API.delete(`vote-delete/${bountyId}/${userId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data;
+}; 
+
 export const fetchFreelancerBounties = async () => {
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('authToken');
@@ -132,6 +143,28 @@ export const fetchFreelancerBounties = async () => {
     }
   });
   return response.data.requestedBounties;
+}; 
+
+export const fetchDisputedBounties = async () => {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`get-disputed-bounties/${userId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.disputed_bounties;
+}; 
+
+export const fetchRewardBounties = async () => {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`get-reward-bounties/${userId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response.data.reward_bounties;
 }; 
 
 export const fetchBountyTypes = async () => {
@@ -316,10 +349,11 @@ export const transferAlgosToSmartContracts = async (
     'create_task(pay,uint64,address,address,uint64)void'
   );
 
+  const reward = rewardAmount + env_config.smart_contract_app_fee
   const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
     sender: activeAddress,
     receiver: env_config.smart_contract_app_address,
-    amount: rewardAmount,
+    amount: reward,
     suggestedParams,
   });
 
@@ -434,6 +468,74 @@ export const votingSmartContract = async(
     methodArgs: [
       Number(bountyId),
       vote_for_freelancer,
+      activeAddress,
+    ],
+    boxes: [
+    { appIndex: env_config.smart_contract_app_id, name: disputesBoxKey },
+  ],
+    sender: activeAddress,
+    suggestedParams,
+    signer: transactionSigner,
+  });
+
+  await atc.execute(algodClient, 4);
+
+};
+
+export const claimRewardSmartContract = async(
+  bountyId,
+  activeAddress,
+  transactionSigner,
+  algodClient
+) => {
+  const atc = new algosdk.AtomicTransactionComposer();
+  const suggestedParams = await algodClient.getTransactionParams().do();
+
+  const method = algosdk.ABIMethod.fromSignature(
+    'resolve_dispute(uint64,address)uint64'
+  );
+  const usersBoxKey = encodeBoxKeyWithPrefix("users", bountyId);
+  const disputesBoxKey = encodeBoxKeyWithPrefix("disputes", bountyId);
+
+  atc.addMethodCall({
+    appID: env_config.smart_contract_app_id,
+    method,
+    methodArgs: [
+      Number(bountyId),
+      activeAddress,
+    ],
+    boxes: [
+    { appIndex: env_config.smart_contract_app_id, name: usersBoxKey },
+    { appIndex: env_config.smart_contract_app_id, name: disputesBoxKey },
+  ],
+    sender: activeAddress,
+    suggestedParams,
+    signer: transactionSigner,
+  });
+
+  await atc.execute(algodClient, 4);
+
+};
+
+export const voterClaimRewardSmartContract = async(
+  bountyId,
+  activeAddress,
+  transactionSigner,
+  algodClient
+) => {
+  const atc = new algosdk.AtomicTransactionComposer();
+  const suggestedParams = await algodClient.getTransactionParams().do();
+
+  const method = algosdk.ABIMethod.fromSignature(
+    'claim_voting_reward(uint64,address)uint64'
+  );
+  const disputesBoxKey = encodeBoxKeyWithPrefix("disputes", bountyId);
+
+  atc.addMethodCall({
+    appID: env_config.smart_contract_app_id,
+    method,
+    methodArgs: [
+      Number(bountyId),
       activeAddress,
     ],
     boxes: [
