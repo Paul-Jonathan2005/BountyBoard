@@ -1,8 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Loader from '../assets/loader2.png'; 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import duration from 'dayjs/plugin/duration';
 dayjs.extend(utc);
-import { fetchBountyDetails, fetchBountyRequests, transferAmount, raiseDispute, fetchComplaints, sendVote} from '../services/api';
+dayjs.extend(duration);
+import { fetchBountyDetails, fetchBountyRequests, transferAmount, raiseDispute, fetchComplaints, sendVote, deleteVote} from '../services/api';
 import { href, useParams } from 'react-router-dom';
 import '../css/BountyDetails.css'
 import Alert from '../components/Alert';
@@ -15,7 +18,10 @@ import {sendBountyRequest,
         transferAlgosToFreelancer, 
         startDisputeSmartContract, 
         postComplaintMessage, 
-        votingSmartContract} 
+        votingSmartContract,
+        claimRewardSmartContract,
+        voterClaimRewardSmartContract,
+      } 
         from '../services/api';
 import CandidateTileList from './CandidateTileList';
 import MessageTileList from './MessageTileList';
@@ -25,7 +31,7 @@ import { useWallet } from '@txnlab/use-wallet-react';
 
 export default function BountyDetails(){
     const { viewerType, bountyId } = useParams();
-    const UserId = localStorage.getItem("userId")
+    const UserId = parseInt(localStorage.getItem("userId"), 10);
     const [bountyDetails, setBountyDetails] = useState([]);
     const [bountyRequests, setBountyRequests] = useState([]);
     const [chatMessages, setChatMessages] = useState([]);
@@ -44,6 +50,7 @@ export default function BountyDetails(){
     const [alertMessage, setAlertMessage] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [type, setType] = useState("success")
+    const [loading, setLoading] = useState(false);
 
     const chatEndRef = useRef(null);
     const scrollToBottom = () => {
@@ -51,9 +58,17 @@ export default function BountyDetails(){
     };
     const { activeAddress, transactionSigner, algodClient } = useWallet();
 
-    useEffect(() => {
-      scrollToBottom();
-    }, [chatMessages, complaintMessages]);
+
+// Only scroll to bottom when user sends a message, not on load
+useEffect(() => {
+  if (chatMessages.length > 0 && formData.chat === '') return; // avoid scroll on load
+  if (formData.chat.trim()) scrollToBottom();
+}, [chatMessages]);
+
+useEffect(() => {
+  if (complaintMessages.length > 0 && complaintData.complaint === '') return; // avoid scroll on load
+  if (complaintData.complaint.trim()) scrollToBottom();
+}, [complaintMessages]);
 
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -111,6 +126,7 @@ export default function BountyDetails(){
     }
 
     const handleVote = async(voted_for) =>{
+      setLoading(true);
       try {
          const WalletAddress = localStorage.getItem("walletAddress");
         if (!WalletAddress) {
@@ -127,18 +143,20 @@ export default function BountyDetails(){
           setTimeout(() => {
           getBountyDetails();
           }, 1500);
-        
       } catch (error) {
         console.log(error);
         const msg = extractErrorMessage(error);
         setAlertMessage(msg);
         setShowAlert(true);
         setType("error")
+      } finally {
+        setLoading(false);
       }
     }
     
     const handleComplaint = async(e) =>{
       e.preventDefault();
+      setLoading(true);
       try {
         const WalletAddress = localStorage.getItem("walletAddress");
         if (!WalletAddress) {
@@ -162,11 +180,14 @@ export default function BountyDetails(){
         setAlertMessage(msg);
         setShowAlert(true);
         setType("error")
+      } finally {
+        setLoading(false);
       }
     };
     
     const handlePay = async(e) =>{
       e.preventDefault();
+      setLoading(true);
       try {
         const clientWalletAddress = localStorage.getItem("walletAddress");
         if (!clientWalletAddress) {
@@ -176,7 +197,7 @@ export default function BountyDetails(){
           return;
         }        
           const callSmartContract = await transferAlgosToFreelancer(bountyId, activeAddress,transactionSigner, algodClient);
-          const data = await transferAmount( bountyId );
+          const data = await transferAmount( UserId===bountyDetails.assigned_candidate_id, bountyId );
           setAlertMessage('Paid Successfully!');
           setShowAlert(true);
           setType("success")
@@ -189,8 +210,69 @@ export default function BountyDetails(){
           setAlertMessage(msg);
           setShowAlert(true);
           setType("error")
+        } finally {
+          setLoading(false);
         }
+    };
 
+    const handleReleaseReward = async(e) =>{
+      e.preventDefault();
+      setLoading(true);
+      try {
+        const clientWalletAddress = localStorage.getItem("walletAddress");
+        if (!clientWalletAddress) {
+          setAlertMessage('Please Connect To Pera Wallet From UserPage');
+          setShowAlert(true);
+          setType("success")
+          return;
+        }        
+          const callSmartContract = await claimRewardSmartContract(bountyId, activeAddress,transactionSigner, algodClient);
+          const data = await transferAmount( UserId===bountyDetails.assigned_candidate_id, bountyId );
+          setAlertMessage('Reward Claimed Successfully!');
+          setShowAlert(true);
+          setType("success")
+          setTimeout(() => {
+          getBountyDetails();
+          }, 1500);
+        } catch (error) {
+          console.log(error);
+          const msg = extractErrorMessage(error);
+          setAlertMessage(msg);
+          setShowAlert(true);
+          setType("error")
+        } finally {
+          setLoading(false);
+        }
+    };
+
+    const handleVoterReward = async(e) =>{
+      e.preventDefault();
+      setLoading(true);
+      try {
+        const clientWalletAddress = localStorage.getItem("walletAddress");
+        if (!clientWalletAddress) {
+          setAlertMessage('Please Connect To Pera Wallet From UserPage');
+          setShowAlert(true);
+          setType("success")
+          return;
+        }        
+          // const callSmartContract = await voterClaimRewardSmartContract(bountyId, activeAddress,transactionSigner, algodClient);
+          const data = await deleteVote( bountyId );
+          setAlertMessage('Vote Reward Claimed Successfully!');
+          setShowAlert(true);
+          setType("success")
+          setTimeout(() => {
+          getBountyDetails();
+          }, 1500);
+        } catch (error) {
+          console.log(error);
+          const msg = extractErrorMessage(error);
+          setAlertMessage(msg);
+          setShowAlert(true);
+          setType("error")
+        } finally {
+          setLoading(false);
+        }
     };
 
     const handleFinalSubmission = async (e) =>{
@@ -245,6 +327,7 @@ export default function BountyDetails(){
     };
 
      const handleRequestBounty = async () => {
+        setLoading(true);
         try{
           const freelancerWalletAddress = localStorage.getItem("walletAddress");
             if (!freelancerWalletAddress) {
@@ -266,12 +349,50 @@ export default function BountyDetails(){
             setAlertMessage(msg);
             setShowAlert(true);
             setType("error") 
+        } finally {
+          setLoading(false);
         }
      }
 
+    const isVotingClosed = !bountyDetails.dispute_end_date || dayjs.utc().isAfter(dayjs.utc(bountyDetails.dispute_end_date));
+    const [timeRemaining, setTimeRemaining] = useState(null);
+    const [formattedTimeRemaining, setFormattedTimeRemaining] = useState(null);
 
-    const isVotingClosed = !bountyDetails.dispute_end_data || dayjs.utc().isAfter(dayjs.utc(bountyDetails.dispute_end_data));
+    useEffect(() => {
+      if (!bountyDetails.dispute_end_date || isVotingClosed) return;
+
+      const interval = setInterval(() => {
+      const now = dayjs.utc();
+      const end = dayjs.utc(bountyDetails.dispute_end_date);
+      const remaining = end.diff(now);
+
+        if (remaining > 0) {
+          const duration = dayjs.duration(remaining);
+          const formatted =
+            (duration.days() > 0 ? `${duration.days()}d ` : '') +
+            duration.format('HH:mm:ss');
+          setFormattedTimeRemaining(formatted);
+        } else {
+          setFormattedTimeRemaining(null);
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }, [bountyDetails.dispute_end_date, isVotingClosed]);
     
+      if (loading) {
+        return (
+          <div className="loader-overlay">
+            <div className="loader-container">
+              <p className="loader-text">Please open Pera Wallet</p>
+              <div className="loader-ring">
+                <img src={Loader} alt="Loading..." className="loader-core" />
+              </div>
+            </div>
+          </div>
+        );
+      }
       return (
         <>
         {showAlert && (
@@ -327,7 +448,7 @@ export default function BountyDetails(){
                 <MessageTileList chatMessages={chatMessages} />
                 <div ref={chatEndRef} />
               </div>
-              {!bountyDetails.is_disputed &&
+              {!bountyDetails.is_disputed && (UserId === bountyDetails.client_id || UserId === bountyDetails.assigned_candidate_id) &&
                 <form onSubmit={handleSubmit} className="chat-form">
                   <input
                     type="text"
@@ -402,25 +523,36 @@ export default function BountyDetails(){
                 <MessageTileList chatMessages={complaintMessages} />
                 <div ref={chatEndRef} />
               </div>
-              <form onSubmit={handleComplaintSubmit} className="chat-form">
-                <input
-                  type="text"
-                  name="complaint"
-                  placeholder="Type Your Message Here"
-                  value={complaintData.complaint}
-                  onChange={handleComplaintChange}
-                  required
-                  className="chat-input"
-                />
-                <button
-                  type="submit"
-                  className="chat-button"
-                >
-                  Send
-                </button>
-              </form>
+              { bountyDetails.is_disputed && (UserId == bountyDetails.client_id || UserId == bountyDetails.assigned_candidate_id) &&
+                <form onSubmit={handleComplaintSubmit} className="chat-form">
+                  <input
+                    type="text"
+                    name="complaint"
+                    placeholder="Type Your Message Here"
+                    value={complaintData.complaint}
+                    onChange={handleComplaintChange}
+                    required
+                    className="chat-input"
+                  />
+                  <button
+                    type="submit"
+                    className="chat-button"
+                  >
+                    Send
+                  </button>
+                </form>
+              }
             </div>
             </>
+        }
+        { bountyDetails.is_disputed &&
+          <div className="voting-timer">
+            {formattedTimeRemaining && !isVotingClosed ? (
+              <>Voting ends in: <strong>{formattedTimeRemaining}</strong></>
+            ) : (
+              <>Voting closed</>
+            )}
+          </div>
         }
         {
           !isVotingClosed &&
@@ -432,11 +564,64 @@ export default function BountyDetails(){
             <button className="vote-button vote-client-button" onClick={handleClientVote}>Vote for Client</button>
           </div>
         }
+        
         {
           bountyDetails.voted_for &&
           <div className="vote-buttons-container">
             <button className="voted-button" disabled={true}>
               Voted for {bountyDetails.voted_for}
+            </button>
+          </div>
+        }
+
+        {
+          isVotingClosed && bountyDetails.dispute_result && (
+            <div className="dispute-result">
+              <h3>Dispute Result</h3>
+              <p>Freelancer Votes: <strong>{bountyDetails.dispute_result.freelancer_votes}</strong></p>
+              <p>Client Votes: <strong>{bountyDetails.dispute_result.client_votes}</strong></p>
+              <p>🏆 Winner: <strong>{bountyDetails.dispute_result.winner.toUpperCase()}</strong></p>
+            </div>
+          )
+        }
+        {
+          isVotingClosed &&
+          bountyDetails.dispute_result &&
+          (
+            <>
+              {
+                bountyDetails.dispute_result.winner === 'FREELANCER' &&
+                UserId === bountyDetails.assigned_candidate_id && !bountyDetails.is_amount_transfered && (
+                  <div className="vote-buttons-container" >
+                    <button className="release-button" onClick={handleReleaseReward}>Release Reward</button>
+                  </div>
+                )
+              }
+              {
+                bountyDetails.dispute_result.winner === 'CLIENT' &&
+                UserId === bountyDetails.client_id && !bountyDetails.is_client_amount_transfered && (
+                  <div className="vote-buttons-container">
+                    <button className="release-button" onClick={handleReleaseReward}>Release Reward</button>
+                  </div>
+                )
+              }
+              {
+                bountyDetails.dispute_result.winner === 'TIE' &&
+                ((UserId === bountyDetails.client_id && !bountyDetails.is_client_amount_transfered ) || (UserId === bountyDetails.assigned_candidate_id && !bountyDetails.is_amount_transfered)) && (
+                  <div className="vote-buttons-container">
+                    <button className="release-button" onClick={handleReleaseReward}>Release Reward</button>
+                    <p className="tie-message">50% of the reward will be released</p>
+                  </div>
+                )
+              }
+            </>
+          )
+        }
+        {
+          isVotingClosed && bountyDetails.voted_for &&
+          <div className="vote-buttons-container">
+            <button className="release-button" onClick={handleVoterReward}>
+              Claim Voting Reward
             </button>
           </div>
         }
