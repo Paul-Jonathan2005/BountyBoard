@@ -28,7 +28,7 @@ function Login() {
       const data = await loginUser(formData);
       setAlertMessage('Login successful!');
       setShowAlert(true);
-      setType("success")
+      setType("success");
       setTimeout(() => {
       navigate('/user-details');
       }, 1500);
@@ -36,7 +36,7 @@ function Login() {
         const msg = extractErrorMessage(error);
         setAlertMessage(msg);
         setShowAlert(true);
-        setType("error")
+        setType("error");
     }
   };
 

@@ -2,12 +2,10 @@ import React from 'react';
 import '../css/MessageTile.css'
 
 export default function Message({chat}){
-      const  {username, created_time, message}= chat;
-      const currentUser = localStorage.getItem("username")
-      const isCurrentUser = username === currentUser;
+      const  {username, created_time, message, isClient}= chat;
 
       return (
-        <div className={`chat-message ${isCurrentUser ? 'chat-right' : 'chat-left'}`}>
+        <div className={`chat-message ${isClient ? 'chat-left' : 'chat-right'}`}>
           <div className="chat-bubble">
             <div className="chat-meta">
               <span className="chat-username">{username}</span>

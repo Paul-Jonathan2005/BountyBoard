@@ -13,6 +13,9 @@ import FreelancerPaymentPendingPage from '../pages/FreelancerPaymentPendingPage'
 import ClientCompletedBountiesPage from '../pages/ClientCompletedBountiesPage';
 import ClientPaymentPendingPage from '../pages/ClientPaymentPendingPage';
 import BountyRequestsPage from '../pages/BountyRequestsPage';
+import BountyDisputePage from '../pages/BountyDisputePage';
+import BountyVotingRewardPage from '../pages/BountyVotingRewardPage';
+import PrivateRoute from './PrivateRoute';
 
 export default function AppRoutes() {
   return (
@@ -20,18 +23,20 @@ export default function AppRoutes() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/freelancer/bounty-types" element={<BountyTypePage />} />
-      <Route path="/user-details" element={<UserDetailsPage />} />
-      <Route path="/:viewerType/bounty-details/:bountyId" element={<BountyDetailsPage />} />
-      <Route path="/client/created-bounties" element={<CreatedBountiesPage />} />
-      <Route path="/freelancer/assigned-bounties" element={<AssignedBountiesPage />} />
-      <Route path="/freelancer/bounty-types" element={<BountyTypePage />} />
-      <Route path="/freelancer/task-type/:taskType" element={<TaskTypeBountiesPage />} />
-      <Route path="/freelancer/bounty-requests" element={<BountyRequestsPage />} />
-      <Route path="/freelancer/completed-bounties" element={<FreelancerCompletedBountiesPage />} />
-      <Route path="/freelancer/payment-pending" element={<FreelancerPaymentPendingPage />} />
-      <Route path="/client/completed-bounties" element={<ClientCompletedBountiesPage />} />
-      <Route path="/client/payment-pending" element={<ClientPaymentPendingPage />} />
+      <Route path="/freelancer/bounty-types" element={<PrivateRoute><BountyTypePage /></PrivateRoute>} />
+      <Route path="/user-details" element={<PrivateRoute><UserDetailsPage /></PrivateRoute>} />
+      <Route path="/:viewerType/bounty-details/:bountyId" element={<PrivateRoute><BountyDetailsPage /></PrivateRoute>} />
+      <Route path="/client/created-bounties" element={<PrivateRoute><CreatedBountiesPage /></PrivateRoute>} />
+      <Route path="/freelancer/assigned-bounties" element={<PrivateRoute><AssignedBountiesPage /></PrivateRoute>} />
+      <Route path="/freelancer/bounty-types" element={<PrivateRoute><BountyTypePage /></PrivateRoute>} />
+      <Route path="/freelancer/task-type/:taskType" element={<PrivateRoute><TaskTypeBountiesPage /></PrivateRoute>} />
+      <Route path="/freelancer/bounty-requests" element={<PrivateRoute><BountyRequestsPage /></PrivateRoute>} />
+      <Route path="/freelancer/completed-bounties" element={<PrivateRoute><FreelancerCompletedBountiesPage /></PrivateRoute>} />
+      <Route path="/freelancer/payment-pending" element={<PrivateRoute><FreelancerPaymentPendingPage /></PrivateRoute>} />
+      <Route path="/client/completed-bounties" element={<PrivateRoute><ClientCompletedBountiesPage /></PrivateRoute>} />
+      <Route path="/client/payment-pending" element={<PrivateRoute><ClientPaymentPendingPage /></PrivateRoute>} />
+      <Route path="/voter/disputed-bounties" element={<PrivateRoute><BountyDisputePage /></PrivateRoute>} />
+      <Route path="/voter/reward-bounties" element={<PrivateRoute><BountyVotingRewardPage /></PrivateRoute>} />
     </Routes>
   );
 }

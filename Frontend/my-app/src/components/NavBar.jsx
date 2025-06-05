@@ -7,6 +7,7 @@ function NavBar() {
   const [clientOpen, setClientOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [freelancerOpen, setFreelancerOpen] = useState(false);
+  const [governanceOpen, setGovernanceOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isFreelancer, setIsFreelancer] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -31,9 +32,15 @@ const adminPaths = [
   "/admin/users",
 ];
 
+const governancePaths = [
+  "/voter/disputed-bounties",
+  "/voter/reward-bounties",
+];
+
 const isFreelancerOpen = freelancerOpen || freelancerPaths.includes(location.pathname);
 const isClientOpen = clientOpen || clientPaths.includes(location.pathname);
 const isAdminOpen = adminOpen || adminPaths.includes(location.pathname);
+const isGovernanceOpen = governanceOpen || governancePaths.includes(location.pathname);
 
 useEffect(() => {
   const userRole = localStorage.getItem("userRole")
@@ -107,7 +114,7 @@ useEffect(() => {
           )}
           </>
         }
-        {isAdmin &&
+        {/* {isAdmin &&
         <>
         <li onClick={() => setAdminOpen(!adminOpen)}>
             🧑‍🔧 {expanded && 'Admin ▾'}
@@ -120,7 +127,20 @@ useEffect(() => {
             </ul>
           )}
         </>
-        }
+        } */}
+         <li onClick={() => setGovernanceOpen(!governanceOpen)}>
+            ⚖️ {expanded && 'Governance ▾'}
+          </li>
+          {isGovernanceOpen && expanded && (
+            <ul className="submenu">
+              <li className={location.pathname === "/voter/disputed-bounties" ? "active" : ""}>
+                <Link to="/voter/disputed-bounties">Bounty Disputes</Link>
+              </li>
+              <li className={location.pathname === "/voter/reward-bounties" ? "active" : ""}>
+                <Link to="/voter/reward-bounties">Voting Rewards</Link>
+              </li>
+            </ul>
+          )}
         </ul>
       </nav>
     </div>

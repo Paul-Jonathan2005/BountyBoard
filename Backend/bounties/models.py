@@ -14,13 +14,14 @@ class Bounties(models.Model):
     is_assigened = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
     is_amount_transfered = models.BooleanField(default=False)
+    is_client_amount_transfered = models.BooleanField(default=False)
     end_date = models.DateField(null=True)
     start_date = models.DateField(null=True)
     status = models.IntegerField(default=0)
     client_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     final_submission_link = models.URLField(null=True)
     is_disputed = models.BooleanField(default=False, null=True)
-    dispute_end_data = models.DateTimeField(null=True)
+    dispute_end_date = models.DateTimeField(null=True)
 
 
 class BountyFreelancerMap(models.Model):
