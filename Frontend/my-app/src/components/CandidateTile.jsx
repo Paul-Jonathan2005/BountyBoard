@@ -5,6 +5,7 @@ import extractErrorMessage from '../utils/extractErrorMessage';
 import {acceptBountyRequest, transferAlgosToSmartContracts} from '../services/api';
 import algosdk from 'algosdk';
 import { useWallet } from '@txnlab/use-wallet-react';
+import env_config from '../Config';
 
 export default function CandidateTile({ candidateDetails, setShowAlert, setType, setAlertMessage, reward, getBountyDetails}) {
     const { bountyId } = useParams();
