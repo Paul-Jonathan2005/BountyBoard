@@ -1,15 +1,26 @@
+from http import client
+from pydoc import cli
 from django.shortcuts import render
+from flask.config import T
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
+from datetime import datetime, timezone
 
 from rest_framework import serializers
 
 from user.models import MyUser
 from user.serializers import BountyFreelancerSerializer
-from .models import Bounties, BountyFreelancerMap, Chat_table, Request_table, Dispute_messages_table, Voting_table
+from .models import (
+    Bounties,
+    BountyFreelancerMap,
+    Chat_table,
+    Request_table,
+    Dispute_messages_table,
+    Voting_table,
+)
 from .serializers import (
     AcceptBountySerializer,
     GetBountySerializer,
@@ -195,7 +206,8 @@ def get_bounties_request(request, bounty_id):
 
     bounties_requests = Request_table.objects.filter(bounty_id=bounty_id)
     freelancer_address_map = {
-        req.requested_candidate_id.id: req.candidate_pera_wallet_address for req in bounties_requests
+        req.requested_candidate_id.id: req.candidate_pera_wallet_address
+        for req in bounties_requests
     }
     bounty_request_ids = freelancer_address_map.keys()
     freelancer_details = MyUser.objects.filter(id__in=bounty_request_ids)
@@ -266,17 +278,21 @@ class message(APIView):
                 {"status": False, "message": "Bounty_id is Required"},
                 status.HTTP_400_BAD_REQUEST,
             )
+        bounty = Bounties.objects.get(id=bounty_id)
+        client_id = bounty.client_id.id
+        
         message = Chat_table.objects.filter(bounty_id=bounty_id).order_by("id")
         serializers = MessageSerializer(message, many=True)
         user_ids = set([msg["user"] for msg in serializers.data])
         users = MyUser.objects.filter(id__in=user_ids)
         user_map = {user.id: user.username for user in users}
-        
+
         enriched_messages = []
         for msg in serializers.data:
             msg["username"] = user_map.get(msg["user"], "Unknown")
+            msg["isClient"] = msg["user"] == client_id
             enriched_messages.append(msg)
-            
+
         return Response({"status": True, "chat": enriched_messages}, status.HTTP_200_OK)
 
 
@@ -303,44 +319,84 @@ class Complaint_chat(APIView):
                 {"status": False, "message": "Bounty_id is Required"},
                 status.HTTP_400_BAD_REQUEST,
             )
-        message = Dispute_messages_table.objects.filter(bounty_id=bounty_id).order_by("id")
+        bounty = Bounties.objects.get(id=bounty_id)
+        client_id = bounty.client_id.id
+        
+        message = Dispute_messages_table.objects.filter(bounty_id=bounty_id).order_by(
+            "id"
+        )
         serializers = ComplaintSerializer(message, many=True)
         user_ids = set([msg["user"] for msg in serializers.data])
         users = MyUser.objects.filter(id__in=user_ids)
         user_map = {user.id: user.username for user in users}
-        
+
         enriched_messages = []
         for msg in serializers.data:
             msg["username"] = user_map.get(msg["user"], "Unknown")
+            msg["isClient"] = msg["user"] == client_id
             enriched_messages.append(msg)
-            
-        return Response({"status": True, "complaint": enriched_messages}, status.HTTP_200_OK)
+
+        return Response(
+            {"status": True, "complaint": enriched_messages}, status.HTTP_200_OK
+        )
 
 
 @api_view(["GET"])
 def get_bounties_details(request, bounty_id, freelancer_id):
-    bounty_details = Bounties.objects.get(id=bounty_id)
-    serializer = BountySerializer(bounty_details, many = False)
+    bounty = Bounties.objects.get(id=bounty_id)
+    serializer = BountySerializer(bounty, many=False)
     is_bounty_requested = (
         Request_table.objects.filter(bounty_id=bounty_id)
         .filter(requested_candidate_id=freelancer_id)
         .exists()
     )
-    
+
     bounty_map = BountyFreelancerMap.objects.filter(bounty_id=bounty_id).first()
     assigned_candidate_id = bounty_map.assigned_candidate_id.id if bounty_map else None
-    
-    vote = Voting_table.objects.filter(bounty_id=bounty_id).filter(user=freelancer_id).first() 
+
+    vote = (
+        Voting_table.objects.filter(bounty_id=bounty_id)
+        .filter(user=freelancer_id)
+        .first()
+    )
     voted_for = vote.voted_for if vote else None
     bounty_details = {
         **serializer.data,
         "is_bounty_requested": is_bounty_requested,
         "assigned_candidate_id": assigned_candidate_id,
-        "voted_for" : voted_for,
+        "voted_for": voted_for,
     }
+    if (
+        bounty.is_disputed
+        and bounty.dispute_end_date
+        and datetime.now(timezone.utc) > bounty.dispute_end_date
+    ):
+        
+        votes = Voting_table.objects.filter(bounty_id=bounty_id)
+        freelancer_votes = votes.filter(voted_for="FREELANCER").count()
+        client_votes = votes.filter(voted_for="CLIENT").count()
+
+        if freelancer_votes > client_votes:
+            winner = "FREELANCER"
+        elif client_votes > freelancer_votes:
+            winner = "CLIENT"
+        else:
+            winner = "TIE"
+        bounty_details = {
+             **bounty_details,
+            "dispute_result": {
+                "freelancer_votes": freelancer_votes,
+                "client_votes": client_votes,
+                "winner": winner,
+        }
+        }
+        
+        
+
     return Response(
         {"status": True, "bounty_details": bounty_details}, status.HTTP_200_OK
     )
+
 
 @api_view(["POST"])
 def accept_submission_link(request, bounty_id):
@@ -350,12 +406,13 @@ def accept_submission_link(request, bounty_id):
     bounty.is_completed = True
     bounty.save()
     return Response(
-            {
-                "status": True,
-                "message": "Final Submission Link Accepted Successfullly",
-            },
-            status.HTTP_201_CREATED,
-        )
+        {
+            "status": True,
+            "message": "Final Submission Link Accepted Successfullly",
+        },
+        status.HTTP_201_CREATED,
+    )
+
 
 @api_view(["POST"])
 def voting(request):
@@ -376,43 +433,105 @@ def voting(request):
         },
         status.HTTP_201_CREATED,
     )
+
+@api_view(["DELETE"])
+def delete_vote(request, bounty_id, user_id):
+    vote = Voting_table.objects.filter(bounty_id = bounty_id).filter(user = user_id)
+    vote.delete()
     
+    return Response(
+        {
+            "status": True,
+            "message": "Vote Deleted Successfullly",
+        },
+        status.HTTP_200_OK,
+    )
+
 @api_view(["GET"])
-def transfer_amount(request, bounty_id):
+def get_reward_bounties(request, user_id):
+    bounty_ids = Voting_table.objects.filter(user_id = user_id).values_list("bounty_id", flat=True)
+    bounties = Bounties.objects.filter(id__in = bounty_ids)
+    
+    serializer = BountySerializer(bounties, many=True)
+    
+    return Response(
+        {
+            "status": True,
+            "reward_bounties": serializer.data,
+        },
+        status.HTTP_200_OK,
+    )
+
+
+@api_view(["GET"])
+def transfer_amount(request, is_freelancer, bounty_id):
     bounty = Bounties.objects.get(id=bounty_id)
-    bounty.is_amount_transfered = True
+    is_freelancer = is_freelancer.lower() == "true"
+    if is_freelancer:
+        bounty.is_amount_transfered = True
+    else:
+        bounty.is_client_amount_transfered = True
     bounty.save()
     return Response(
-            {
-                "status": True,
-                "message": "Paid Successfullly",
-            },
-            status.HTTP_201_CREATED,
-        )
-    
+        {
+            "status": True,
+            "message": "Paid Successfullly",
+        },
+        status.HTTP_201_CREATED,
+    )
+
+
 @api_view(["GET"])
 def raise_bounty_dispute(request, bounty_id):
     bounty = Bounties.objects.get(id=bounty_id)
     bounty.is_disputed = True
-    bounty.dispute_end_data = (datetime.now() + timedelta(days=3)).isoformat()
+    bounty.dispute_end_date = (datetime.now() + timedelta(days=3)).isoformat()
     bounty.save()
     return Response(
-            {
-                "status": True,
-                "message": "Dispute Raised Successfullly",
-            },
-            status.HTTP_201_CREATED,
-        )
-    
+        {
+            "status": True,
+            "message": "Dispute Raised Successfullly",
+        },
+        status.HTTP_201_CREATED,
+    )
+
+@api_view(["GET"])
+def get_disputed_bounties(request, user_id):
+    bounty_ids = Voting_table.objects.filter(user_id = user_id).values_list("bounty_id", flat=True)
+    current_time = datetime.now(timezone.utc)
+    disputed_bounties = Bounties.objects.filter(
+        is_disputed=True,
+        dispute_end_date__gt=current_time
+    ).exclude(
+        client_id=user_id
+    ).exclude(
+        bountyfreelancermap__assigned_candidate_id=user_id
+    ).exclude(
+        id__in = bounty_ids
+    ).distinct()
+
+    serializer = BountySerializer(disputed_bounties, many=True)
+
+    return Response(
+        {
+            "status": True,
+            "disputed_bounties": serializer.data,
+        },
+        status.HTTP_200_OK,
+    )
+
+
 @api_view(["GET"])
 def get_freelancer_requested_bounties(request, freelancer_id):
-    requested_bounty_ids = Request_table.objects.filter(requested_candidate_id=freelancer_id).values_list("bounty_id", flat=True)
+    requested_bounty_ids = Request_table.objects.filter(
+        requested_candidate_id=freelancer_id
+    ).values_list("bounty_id", flat=True)
     requested_bounties = Bounties.objects.filter(id__in=requested_bounty_ids)
     serializer = BountySerializer(instance=requested_bounties, many=True)
     return Response(
-            {
-                "status": True,
-                "requestedBounties": serializer.data,
-            },
-            status.HTTP_200_OK,
-        )
+        {
+            "status": True,
+            "requestedBounties": serializer.data,
+        },
+        status.HTTP_200_OK,
+    )
