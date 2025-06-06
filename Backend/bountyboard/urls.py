@@ -22,6 +22,7 @@ from user.views import (
     LogoutPerson,
     freelancer_rating,
     user_detail,
+    dashboard_data,
 )
 from bounties.views import (
     bounty_types,
@@ -37,7 +38,7 @@ from bounties.views import (
     message,
     get_bounties_details,
     accept_submission_link,
-    transfer_amount,
+    transfer_directly_amount,
     get_freelancer_requested_bounties,
     raise_bounty_dispute,
     Complaint_chat,
@@ -65,7 +66,7 @@ urlpatterns = [
     path("get-client-bounty/<int:bounty_id>/get-requests", get_bounties_request),
     path("accept-bounty-request/", accept_bounty_request.as_view()),
     path("submit-bounty/<int:bounty_id>", submit_bounty),
-    path("transfer-amount/<int:bounty_id>", transfer_amount),
+    path("transfer-directly-amount/<int:bounty_id>", transfer_directly_amount),
     path("message/", message.as_view()),
     path("message/<int:bounty_id>", message.as_view()),
     path("complaint/", Complaint_chat.as_view()),
@@ -83,4 +84,5 @@ urlpatterns = [
     path("get-requested-bounties/<int:freelancer_id>", get_freelancer_requested_bounties),
     path("get-disputed-bounties/<int:user_id>", get_disputed_bounties),
     path("get-reward-bounties/<int:user_id>", get_reward_bounties),
+    path("get-dashboard-details/<str:user_type>/<int:user_id>", dashboard_data),
 ]
