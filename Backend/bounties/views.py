@@ -1,15 +1,8 @@
-from http import client
-from pydoc import cli
-from django.shortcuts import render
-from flask.config import T
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
 from datetime import datetime, timezone
-
-from rest_framework import serializers
 
 from user.models import MyUser
 from user.serializers import BountyFreelancerSerializer
@@ -184,11 +177,18 @@ def submit_bounty(request, bounty_id):
 
 
 @api_view(["GET"])
-def transfer_amount(request, bounty_id):
+def transfer_directly_amount(request, bounty_id):
     bounty = Bounties.objects.get(id=bounty_id)
     bounty.is_amount_transfered = True
+    bounty.is_client_amount_transfered = True
     bounty.save()
-
+    
+    user_id = BountyFreelancerMap.objects.get(bounty_id = bounty_id).assigned_candidate_id
+    
+    user = MyUser.objects.get(id = user_id)
+    user.earned_task_reward += bounty.amount
+    user.save()
+    
     return Response(
         {"status": True, "message": " Amount Transfered Successfully "},
         status.HTTP_200_OK,
@@ -280,7 +280,7 @@ class message(APIView):
             )
         bounty = Bounties.objects.get(id=bounty_id)
         client_id = bounty.client_id.id
-        
+
         message = Chat_table.objects.filter(bounty_id=bounty_id).order_by("id")
         serializers = MessageSerializer(message, many=True)
         user_ids = set([msg["user"] for msg in serializers.data])
@@ -321,7 +321,7 @@ class Complaint_chat(APIView):
             )
         bounty = Bounties.objects.get(id=bounty_id)
         client_id = bounty.client_id.id
-        
+
         message = Dispute_messages_table.objects.filter(bounty_id=bounty_id).order_by(
             "id"
         )
@@ -360,18 +360,20 @@ def get_bounties_details(request, bounty_id, freelancer_id):
         .first()
     )
     voted_for = vote.voted_for if vote else None
+    vote_active = vote.active if vote else None
     bounty_details = {
         **serializer.data,
         "is_bounty_requested": is_bounty_requested,
         "assigned_candidate_id": assigned_candidate_id,
         "voted_for": voted_for,
+        "vote_active": vote_active
     }
     if (
         bounty.is_disputed
         and bounty.dispute_end_date
         and datetime.now(timezone.utc) > bounty.dispute_end_date
     ):
-        
+
         votes = Voting_table.objects.filter(bounty_id=bounty_id)
         freelancer_votes = votes.filter(voted_for="FREELANCER").count()
         client_votes = votes.filter(voted_for="CLIENT").count()
@@ -383,16 +385,13 @@ def get_bounties_details(request, bounty_id, freelancer_id):
         else:
             winner = "TIE"
         bounty_details = {
-             **bounty_details,
+            **bounty_details,
             "dispute_result": {
                 "freelancer_votes": freelancer_votes,
                 "client_votes": client_votes,
                 "winner": winner,
+            },
         }
-        }
-        
-        
-
     return Response(
         {"status": True, "bounty_details": bounty_details}, status.HTTP_200_OK
     )
@@ -434,11 +433,19 @@ def voting(request):
         status.HTTP_201_CREATED,
     )
 
+
 @api_view(["DELETE"])
 def delete_vote(request, bounty_id, user_id):
-    vote = Voting_table.objects.filter(bounty_id = bounty_id).filter(user = user_id)
-    vote.delete()
+    vote = Voting_table.objects.filter(bounty_id=bounty_id).filter(user=user_id)
+    vote.active = False
+    vote.save()
     
+    votes_count = Voting_table.objects.filter(bounty_id=bounty_id).count()
+    reward = Bounties.objects.get(id = bounty_id ).amount
+    user = MyUser.objects.get(id = user_id)
+    user.earned_task_reward += ((reward *0.1)/ votes_count)
+    user.save()
+
     return Response(
         {
             "status": True,
@@ -447,13 +454,16 @@ def delete_vote(request, bounty_id, user_id):
         status.HTTP_200_OK,
     )
 
+
 @api_view(["GET"])
 def get_reward_bounties(request, user_id):
-    bounty_ids = Voting_table.objects.filter(user_id = user_id).values_list("bounty_id", flat=True)
-    bounties = Bounties.objects.filter(id__in = bounty_ids)
-    
+    bounty_ids = Voting_table.objects.filter(user_id=user_id).values_list(
+        "bounty_id", flat=True
+    )
+    bounties = Bounties.objects.filter(id__in=bounty_ids)
+
     serializer = BountySerializer(bounties, many=True)
-    
+
     return Response(
         {
             "status": True,
@@ -467,10 +477,59 @@ def get_reward_bounties(request, user_id):
 def transfer_amount(request, is_freelancer, bounty_id):
     bounty = Bounties.objects.get(id=bounty_id)
     is_freelancer = is_freelancer.lower() == "true"
+    
+    votes = Voting_table.objects.filter(bounty_id=bounty_id)
+    freelancer_votes = votes.filter(voted_for="FREELANCER").count()
+    client_votes = votes.filter(voted_for="CLIENT").count()
+
+    if freelancer_votes > client_votes:
+        winner = "FREELANCER"
+    elif client_votes > freelancer_votes:
+        winner = "CLIENT"
+    else:
+        winner = "TIE"
+    num_of_voters = votes.count()
+
     if is_freelancer:
         bounty.is_amount_transfered = True
+        if winner == "TIE":
+            if num_of_voters == 0:
+                reward = bounty.amount * 0.5
+            else:
+                reward = bounty.amount * 0.45
+        else:
+            if num_of_voters == 0:
+                reward = bounty.amount
+            else:
+                reward = bounty.amount * 0.9
+        user = MyUser.objects.get(id = BountyFreelancerMap.objects.get(bounty_id=bounty_id).assigned_candidate_id)
+        user.earned_task_reward += reward
+        user.save()
+            
     else:
         bounty.is_client_amount_transfered = True
+        if winner == "TIE":
+            if num_of_voters == 0:
+                reward = bounty.amount * 0.5
+            else:
+                reward = bounty.amount * 0.45
+        else:
+            if num_of_voters == 0:
+                reward = bounty.amount
+            else:
+                reward = bounty.amount * 0.9
+        user = MyUser.objects.get(id = bounty.client_id)
+        user.earned_task_reward += reward
+        user.save()
+
+    if (
+        bounty.is_disputed
+        and bounty.is_amount_transfered
+        and bounty.is_client_amount_transfered
+        and bounty.dispute_end_date < datetime.now(timezone.utc)
+    ):
+        bounty.is_disputed = False
+
     bounty.save()
     return Response(
         {
@@ -495,20 +554,20 @@ def raise_bounty_dispute(request, bounty_id):
         status.HTTP_201_CREATED,
     )
 
+
 @api_view(["GET"])
 def get_disputed_bounties(request, user_id):
-    bounty_ids = Voting_table.objects.filter(user_id = user_id).values_list("bounty_id", flat=True)
+    bounty_ids = Voting_table.objects.filter(user_id=user_id).values_list(
+        "bounty_id", flat=True
+    )
     current_time = datetime.now(timezone.utc)
-    disputed_bounties = Bounties.objects.filter(
-        is_disputed=True,
-        dispute_end_date__gt=current_time
-    ).exclude(
-        client_id=user_id
-    ).exclude(
-        bountyfreelancermap__assigned_candidate_id=user_id
-    ).exclude(
-        id__in = bounty_ids
-    ).distinct()
+    disputed_bounties = (
+        Bounties.objects.filter(is_disputed=True, dispute_end_date__gt=current_time)
+        .exclude(client_id=user_id)
+        .exclude(bountyfreelancermap__assigned_candidate_id=user_id)
+        .exclude(id__in=bounty_ids)
+        .distinct()
+    )
 
     serializer = BountySerializer(disputed_bounties, many=True)
 
