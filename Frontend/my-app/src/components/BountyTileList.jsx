@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import BountyTile from './BountyTile';
 import '../css/BountyTileList.css';

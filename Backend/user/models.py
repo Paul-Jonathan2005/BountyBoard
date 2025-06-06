@@ -15,3 +15,4 @@ class MyUser(AbstractUser):
     age = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=10, blank=True)
     linkedin_profile_link = models.TextField(blank=True)
+    earned_task_reward = models.FloatField(default=0.0)

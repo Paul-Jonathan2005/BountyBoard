@@ -1,0 +1,120 @@
+
+.tile-green-1 {
+  background: linear-gradient(135deg, #16a34a, #4ade80);
+}
+
+.tile-blue-1 {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+}
+
+.tile-green-2 {
+  background: linear-gradient(135deg, #059669, #34d399);
+}
+
+.tile-orange-1 {
+  background: linear-gradient(135deg, #d97706, #fbbf24);
+}
+
+.tile-red-1 {
+  background: linear-gradient(135deg, #dc2626, #f87171);
+}
+
+.tile-purple-1 {
+  background: linear-gradient(135deg, #7c3aed, #c084fc);
+}
+
+
+.dashboard-container {
+  padding: 40px 20px;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.dashboard-title {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+          background-clip: text;
+          color: transparent;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.dashboard-tile {
+  border-radius: 16px;
+  padding: 36px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  height: 80px;
+}
+
+.dashboard-tile:hover {
+  transform: translateY(-6px);
+}
+
+.dashboard-tile h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #fff7ed; /* soft cream-white for better contrast */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* subtle depth */
+}
+
+.dashboard-tile p {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.tile-blue {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+
+.tile-green {
+  background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.tile-orange {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.tile-red {
+  background: linear-gradient(135deg, #ef4444, #f87171);
+}
+
+.reward-container {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.reward-value {
+  font-size: 45px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.reward-unit {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  user-select: none;
+  vertical-align: sub;
+  line-height: 1;
+  margin-left: 5px;
+}

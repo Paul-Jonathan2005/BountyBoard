@@ -5,7 +5,7 @@ import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(utc);
 dayjs.extend(duration);
-import { fetchBountyDetails, fetchBountyRequests, transferAmount, raiseDispute, fetchComplaints, sendVote, deleteVote} from '../services/api';
+import { fetchBountyDetails, fetchBountyRequests, transferAmount, raiseDispute, fetchComplaints, sendVote, deleteVote, transferDirectlyAmount} from '../services/api';
 import { href, useParams } from 'react-router-dom';
 import '../css/BountyDetails.css'
 import Alert from '../components/Alert';
@@ -196,8 +196,8 @@ useEffect(() => {
           setType("success")
           return;
         }        
-          const callSmartContract = await transferAlgosToFreelancer(bountyId, activeAddress,transactionSigner, algodClient);
-          const data = await transferAmount( UserId===bountyDetails.assigned_candidate_id, bountyId );
+          // const callSmartContract = await transferAlgosToFreelancer(bountyId, activeAddress,transactionSigner, algodClient);
+          const data = await transferDirectlyAmount( bountyId );
           setAlertMessage('Paid Successfully!');
           setShowAlert(true);
           setType("success")
@@ -256,7 +256,7 @@ useEffect(() => {
           setType("success")
           return;
         }        
-          // const callSmartContract = await voterClaimRewardSmartContract(bountyId, activeAddress,transactionSigner, algodClient);
+          const callSmartContract = await voterClaimRewardSmartContract(bountyId, activeAddress,transactionSigner, algodClient);
           const data = await deleteVote( bountyId );
           setAlertMessage('Vote Reward Claimed Successfully!');
           setShowAlert(true);
@@ -436,7 +436,7 @@ useEffect(() => {
             !isFreelancer && !bountyDetails.is_assigened && bountyRequests.length !== 0 &&
             <div>
             <button className='bounty-requests' >Bounty Requests</button> 
-            <CandidateTileList candidateDetailsList={bountyRequests} setShowAlert={setShowAlert} setType={setType} setAlertMessage={setAlertMessage} reward={bountyDetails.amount} getBountyDetails={getBountyDetails}/>
+            <CandidateTileList candidateDetailsList={bountyRequests} setShowAlert={setShowAlert} setType={setType} setAlertMessage={setAlertMessage} reward={bountyDetails.amount} getBountyDetails={getBountyDetails} setLoading={setLoading}/>
             </div>
         }
         {
@@ -448,7 +448,7 @@ useEffect(() => {
                 <MessageTileList chatMessages={chatMessages} />
                 <div ref={chatEndRef} />
               </div>
-              {!bountyDetails.is_disputed && (UserId === bountyDetails.client_id || UserId === bountyDetails.assigned_candidate_id) &&
+              {!bountyDetails.is_disputed && (UserId === bountyDetails.client_id || UserId === bountyDetails.assigned_candidate_id) && !bountyDetails.is_amount_transfered && !bountyDetails.is_client_amount_transfered &&
                 <form onSubmit={handleSubmit} className="chat-form">
                   <input
                     type="text"
@@ -523,7 +523,7 @@ useEffect(() => {
                 <MessageTileList chatMessages={complaintMessages} />
                 <div ref={chatEndRef} />
               </div>
-              { bountyDetails.is_disputed && (UserId == bountyDetails.client_id || UserId == bountyDetails.assigned_candidate_id) &&
+              { bountyDetails.is_disputed && (UserId == bountyDetails.client_id || UserId == bountyDetails.assigned_candidate_id) && !bountyDetails.is_amount_transfered && !bountyDetails.is_client_amount_transfered &&
                 <form onSubmit={handleComplaintSubmit} className="chat-form">
                   <input
                     type="text"
@@ -618,7 +618,7 @@ useEffect(() => {
           )
         }
         {
-          isVotingClosed && bountyDetails.voted_for &&
+          isVotingClosed && bountyDetails.vote_active &&
           <div className="vote-buttons-container">
             <button className="release-button" onClick={handleVoterReward}>
               Claim Voting Reward
