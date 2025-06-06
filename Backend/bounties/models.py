@@ -58,3 +58,4 @@ class Voting_table(models.Model):
     bounty_id = models.ForeignKey(Bounties, on_delete=models.CASCADE)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     voted_for = models.TextField(null=True)
+    active = models.BooleanField(default = True)
