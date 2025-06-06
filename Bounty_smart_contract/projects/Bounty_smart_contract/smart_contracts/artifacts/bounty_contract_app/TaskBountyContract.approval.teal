@@ -186,12 +186,12 @@ create_task:
     ==
     assert
     // smart_contracts/bounty_contract_app/contract.py:37
-    // assert payment_txn.amount == reward.native
+    // assert payment_txn.amount <= reward.native
     frame_dig -5
     gtxns Amount
     frame_dig -1
     btoi
-    ==
+    <=
     assert
     // smart_contracts/bounty_contract_app/contract.py:38
     // assert payment_txn.sender == company.native
@@ -1098,9 +1098,9 @@ claim_voting_reward_else_body@4:
 
 claim_voting_reward_after_for@7:
     // smart_contracts/bounty_contract_app/contract.py:169
-    // assert found, "Not a voter"
+    // assert found, "Voter Not Found"
     frame_dig 7
-    assert // Not a voter
+    assert // Voter Not Found
     // smart_contracts/bounty_contract_app/contract.py:171
     // dispute.voters = new_voters.copy()
     frame_dig 3

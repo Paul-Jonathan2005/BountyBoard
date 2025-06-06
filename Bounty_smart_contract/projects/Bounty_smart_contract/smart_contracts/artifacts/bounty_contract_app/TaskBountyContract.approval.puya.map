@@ -960,7 +960,7 @@
       ]
     },
     "266": {
-      "op": "==",
+      "op": "<=",
       "defined_out": [
         "tmp%5#0"
       ],
@@ -10970,8 +10970,8 @@
       ]
     },
     "1144": {
-      "error": "Not a voter",
-      "op": "assert // Not a voter",
+      "error": "Voter Not Found",
+      "op": "assert // Voter Not Found",
       "stack_out": [
         "voter#0",
         "result.Amount#0",
