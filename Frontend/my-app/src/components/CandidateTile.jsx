@@ -7,13 +7,14 @@ import algosdk from 'algosdk';
 import { useWallet } from '@txnlab/use-wallet-react';
 import env_config from '../Config';
 
-export default function CandidateTile({ candidateDetails, setShowAlert, setType, setAlertMessage, reward, getBountyDetails}) {
+export default function CandidateTile({ candidateDetails, setShowAlert, setType, setAlertMessage, reward, getBountyDetails, setLoading}) {
     const { bountyId } = useParams();
     const { id, first_name, last_name, linkedin_profile_link, wallet_address } = candidateDetails;
     const { activeAddress, transactionSigner, algodClient } = useWallet();
 
  const handleAcceptRequest = async () => {
         try{
+            setLoading(true)
             const clientWalletAddress = localStorage.getItem("walletAddress");
             if (!clientWalletAddress) {
                 setAlertMessage('Please Connect To Pera Wallet From UserPage');
@@ -37,7 +38,10 @@ export default function CandidateTile({ candidateDetails, setShowAlert, setType,
            const msg = extractErrorMessage(error);
             setAlertMessage(msg);
             setShowAlert(true);
-            setType("error") 
+            setType("error")
+        }
+        finally{
+          setLoading(false)
         }
      }
   return (
