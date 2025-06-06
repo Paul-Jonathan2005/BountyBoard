@@ -91,9 +91,32 @@ export const fetchBountyList = async (bountyType) => {
   return response.data.client_bounties;
 }; 
 
+export const fetchDashboardDetails = async (userType) => {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`get-dashboard-details/${userType}/${userId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  console.log(response)
+  return response.data.dashboard_details;
+}; 
+
+
 export const transferAmount = async ( isFreelancer ,bountyId) => {
   const token = localStorage.getItem('authToken');
   const response = await API.get(`transfer-amount/${isFreelancer}/${bountyId}`, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  });
+  return response;
+}; 
+
+export const transferDirectlyAmount = async ( bountyId) => {
+  const token = localStorage.getItem('authToken');
+  const response = await API.get(`transfer-directly-amount/${bountyId}`, {
     headers: {
       Authorization: `Token ${token}`
     }
@@ -353,7 +376,7 @@ export const transferAlgosToSmartContracts = async (
   const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
     sender: activeAddress,
     receiver: env_config.smart_contract_app_address,
-    amount: reward,
+    amount: rewardAmount,
     suggestedParams,
   });
 
@@ -367,7 +390,7 @@ export const transferAlgosToSmartContracts = async (
       Number(bountyId),
       activeAddress,
       freelancerAddress,
-      rewardAmount
+      reward
     ],
     boxes: [{ appIndex: env_config.smart_contract_app_id, name: boxKey }],
     sender: activeAddress,
