@@ -75,6 +75,9 @@ useEffect(() => {
           </li>
           {isFreelancerOpen && expanded && (
             <ul className="submenu">
+              <li className={location.pathname === "/freelancer/freelancer-dashboard" ? "active" : ""}>
+                <Link to="/freelancer/freelancer-dashboard">Dashboard</Link>
+              </li>
               <li className={location.pathname === "/freelancer/bounty-types" ? "active" : ""}>
                 <Link to="/freelancer/bounty-types">Bounty Types</Link>
               </li>
@@ -101,6 +104,9 @@ useEffect(() => {
           </li>
           {isClientOpen && expanded && (
             <ul className="submenu">
+               <li className={location.pathname === "/client/client-dashboard" ? "active" : ""}>
+                <Link to="/client/client-dashboard">Dashboard</Link>
+              </li>
               <li className={location.pathname === "/client/created-bounties" ? "active" : ""}>
                 <Link to="/client/created-bounties">Created Bounties</Link>
               </li>
