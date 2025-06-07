@@ -4,7 +4,8 @@ import Header from '../components/Header.jsx'
 import Navbar from '../components/NavBar.jsx'
 import { fetchFreelancerBounties } from '../services/api.js';
 import BountyTileList from '../components/BountyTileList.jsx';
-import '../css/CreatedBounties.css'
+import '../css/CreatedBounties.css';
+import NoBounties from '../assets/no-data.png';
 
 export default function BountyRequestsPage() {
     const [bounties, setBounties] = useState([]);
@@ -24,7 +25,14 @@ export default function BountyRequestsPage() {
     <div id="requestedbounties">
       <Header />
       <Navbar />
-      <BountyTileList bountyList={bounties} bountyType="INPROGRESS" viewerType="freelancer" />
+      {bounties.length > 0 ? (
+        <BountyTileList bountyList={bounties} bountyType="INPROGRESS" viewerType="freelancer" />
+      ) : (
+        <div className="no-bounties">
+          <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
+          <p>Yet No Bounties are Requested</p>
+        </div>
+      )}
       <Footer />
     </div>
       

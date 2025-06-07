@@ -34,7 +34,7 @@ class TaskBountyContract(ARC4Contract):
         reward: arc4.UInt64,
     ) -> None:
         assert payment_txn.receiver == Global.current_application_address
-        assert payment_txn.amount <= reward.native
+        assert payment_txn.amount >= reward.native
         assert payment_txn.sender == company.native
 
         # Save task data in a box

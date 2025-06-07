@@ -19,3 +19,23 @@
   background-color: #337237;
 }
 
+.no-bounties {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+  padding: 20px;
+  color: #374151;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.no-bounties-img {
+  max-width: 100px;
+  height: auto;
+  margin-bottom: 24px;
+  opacity: 0.8;
+}

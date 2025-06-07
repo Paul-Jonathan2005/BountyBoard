@@ -5,6 +5,7 @@ import Navbar from '../components/NavBar.jsx'
 import '../css/CreatedBounties.css'
 import { fetchRewardBounties } from '../services/api';
 import BountyTileList from '../components/BountyTileList';
+import NoBounties from '../assets/no-data.png';
 
 export default function BountyVotingRewardPage() {
   const [bounties, setBounties] = useState([]);
@@ -25,7 +26,14 @@ export default function BountyVotingRewardPage() {
     <div className='createdbounties'>
       <Header />
       <Navbar />
-      <BountyTileList bountyList={bounties} bountyType="PAID" viewerType="voter" />
+      {bounties.length > 0 ? (
+        <BountyTileList bountyList={bounties} bountyType="PAID" viewerType="voter" />
+      ) : (
+        <div className="no-bounties">
+          <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
+          <p>You haven’t voted for any bounty yet</p>
+        </div>
+      )}
       <Footer />
     </div>
     </>

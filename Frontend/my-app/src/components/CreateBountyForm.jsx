@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import '../css/CreateBountyForm.css'; 
+import '../css/CreateBountyForm.css';
 import Alert from '../components/Alert';
 import extractErrorMessage from '../utils/extractErrorMessage';
 import { useNavigate } from 'react-router-dom';
 import { createBounty } from '../services/api';
 
-export default function CreateBountyForm({ onClose, setShowAlert, setType, setAlertMessage  }) {
+export default function CreateBountyForm({ onClose, setShowAlert, setType, setAlertMessage }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
-    descrition:'',
+    descrition: '',
     task_type: '',
     amount: '',
     deadline: '',
@@ -38,7 +38,7 @@ export default function CreateBountyForm({ onClose, setShowAlert, setType, setAl
     onClose();
   };
 
-  return (        
+  return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>Create Bounty</h2>

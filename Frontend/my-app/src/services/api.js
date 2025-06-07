@@ -376,7 +376,7 @@ export const transferAlgosToSmartContracts = async (
   const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
     sender: activeAddress,
     receiver: env_config.smart_contract_app_address,
-    amount: rewardAmount,
+    amount: reward,
     suggestedParams,
   });
 
@@ -390,7 +390,7 @@ export const transferAlgosToSmartContracts = async (
       Number(bountyId),
       activeAddress,
       freelancerAddress,
-      reward
+      rewardAmount
     ],
     boxes: [{ appIndex: env_config.smart_contract_app_id, name: boxKey }],
     sender: activeAddress,

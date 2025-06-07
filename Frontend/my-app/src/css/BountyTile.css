@@ -13,7 +13,7 @@
 }
 
 .bounty-title {
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 700;
   color: #f8fbf9;
   margin-bottom: 2px;
@@ -77,6 +77,21 @@
 
 .bounty-tile-paid {
   background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+  color: white;
+}
+
+.bounty-tile-disputed {
+  background: linear-gradient(135deg, #dc2626, #f87171);
+  color: white;
+}
+
+.bounty-tile-assigned {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.bounty-tile-requested {
+  background: linear-gradient(135deg, #36d1dc, #11627b);
   color: white;
 }
 

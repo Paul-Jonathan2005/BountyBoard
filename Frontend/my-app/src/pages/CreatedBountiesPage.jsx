@@ -8,6 +8,7 @@ import BountyTileList from '../components/BountyTileList';
 import Alert from '../components/Alert';
 import extractErrorMessage from '../utils/extractErrorMessage';
 import CreateBountyForm from '../components/CreateBountyForm.jsx';
+import NoBounties from '../assets/no-data.png';
 
 export default function CreatedBountiesPage() {
   const [bounties, setBounties] = useState([]);
@@ -41,7 +42,14 @@ export default function CreatedBountiesPage() {
     <div className='createdbounties'>
       <Header />
       <Navbar />
+      {bounties.length > 0 ? (
       <BountyTileList bountyList={bounties} bountyType="INPROGRESS" viewerType="client" />
+      ) : (
+        <div className="no-bounties">
+          <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
+          <p>Create Any Bounty</p>
+        </div>
+      )}
       <button className="create-bounty-button" onClick={() => setShowForm(true)  }>
         Create Bounty
       </button>
