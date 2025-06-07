@@ -79,18 +79,15 @@ class RequestBountySerializer(serializers.ModelSerializer):
 
         if data["requested_candidate_id"]:
 
-            if (
-                not MyUser.objects.filter(id=data["requested_candidate_id"].id)
-                .exists()
-            ):
-                
+            if not MyUser.objects.filter(id=data["requested_candidate_id"].id).exists():
+
                 raise serializers.ValidationError("Invalid Freelancer ID")
-            client_id =  Bounties.objects.get(id=data["bounty_id"].id).client_id
-            if(
-                client_id == data["requested_candidate_id"]
-            ):
-                raise serializers.ValidationError("Client cannot Request it's own Bounty")
-            
+            client_id = Bounties.objects.get(id=data["bounty_id"].id).client_id
+            if client_id == data["requested_candidate_id"]:
+                raise serializers.ValidationError(
+                    "Client cannot Request it's own Bounty"
+                )
+
             if (
                 Request_table.objects.filter(bounty_id=data["bounty_id"].id)
                 .filter(requested_candidate_id=data["requested_candidate_id"])
@@ -98,6 +95,7 @@ class RequestBountySerializer(serializers.ModelSerializer):
             ):
                 raise serializers.ValidationError("Request already Submitted")
         return data
+
 
 class voteBountySerializer(serializers.ModelSerializer):
     class Meta:
@@ -107,19 +105,12 @@ class voteBountySerializer(serializers.ModelSerializer):
     def validate(self, data):
 
         if data["bounty_id"]:
-            if (
-                not Bounties.objects.filter(id=data["bounty_id"].id)
-                .exists()
-            ):
+            if not Bounties.objects.filter(id=data["bounty_id"].id).exists():
                 raise serializers.ValidationError(" Bounty ID is invaild")
 
         if data["user"]:
 
-            if (
-                not MyUser.objects
-                .filter(id=data["user"].id)
-                .exists()
-            ):
+            if not MyUser.objects.filter(id=data["user"].id).exists():
                 raise serializers.ValidationError("Invalid Freelancer ID")
 
             if (
