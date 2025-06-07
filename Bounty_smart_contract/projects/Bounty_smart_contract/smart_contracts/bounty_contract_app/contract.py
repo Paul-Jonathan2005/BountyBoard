@@ -105,12 +105,12 @@ class TaskBountyContract(ARC4Contract):
         task_data = self.box_map_struct[task_id]
         dispute = self.dispute_box[task_id].copy()
         assert dispute.is_open
-        
+
         if dispute.voters.length != 0:
             voter_reward_pool = arc4.UInt64(dispute.reward.native // 10)
         else:
             voter_reward_pool = arc4.UInt64(0)
-            
+
         reward_to_winner = arc4.UInt64(dispute.reward.native - voter_reward_pool.native)
 
         if dispute.freelancer_votes.native > dispute.company_votes.native:

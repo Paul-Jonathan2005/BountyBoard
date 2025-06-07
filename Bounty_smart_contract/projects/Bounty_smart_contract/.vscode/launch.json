@@ -22,7 +22,9 @@
       "type": "python",
       "request": "launch",
       "module": "smart_contracts",
-      "args": ["deploy"],
+      "args": [
+        "deploy"
+      ],
       "cwd": "${workspaceFolder}",
       "env": {
         "ALGOD_TOKEN": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -38,9 +40,11 @@
       "type": "python",
       "request": "launch",
       "module": "smart_contracts",
-      "args": ["build"],
+      "args": [
+        "build"
+      ],
       "cwd": "${workspaceFolder}"
-    },    
+    },
     {
       "type": "avm",
       "request": "launch",
