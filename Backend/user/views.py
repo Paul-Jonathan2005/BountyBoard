@@ -1,3 +1,4 @@
+from pickle import TRUE
 from django.shortcuts import render
 from rest_framework.views import APIView
 from sqlalchemy import true
@@ -121,7 +122,7 @@ def dashboard_data(request, user_type, user_id):
         earned_task_reward = user.earned_task_reward
         active_bounty_ids = BountyFreelancerMap.objects.filter(assigned_candidate_id = user_id).values_list("bounty_id", flat=True)
         active_bounties_count = Bounties.objects.filter(id__in = active_bounty_ids).filter(is_assigened = True).filter(is_completed = False).count()
-        completed_bounties_count = Bounties.objects.filter(id__in = active_bounty_ids).filter(is_completed = True).filter(is_amount_transfered = False).count()
+        completed_bounties_count = Bounties.objects.filter(id__in = active_bounty_ids).filter(is_completed = True).filter(is_amount_transfered = True).count()
         payment_pending_bounties_count = Bounties.objects.filter(id__in = active_bounty_ids).filter(is_amount_transfered = False).count()
         disputed_bounties_count = Bounties.objects.filter(id__in = active_bounty_ids).filter(is_disputed = True).count()
         requested_bounties_count = Request_table.objects.filter(requested_candidate_id = user_id).count()
@@ -136,7 +137,7 @@ def dashboard_data(request, user_type, user_id):
         }
     elif user_type == "client":
         created_bounties_count = Bounties.objects.filter(client_id = user_id).count()
-        completed_bounties_count = Bounties.objects.filter(client_id = user_id).filter(is_completed = True).filter(is_amount_transfered = False).count()
+        completed_bounties_count = Bounties.objects.filter(client_id = user_id).filter(is_completed = True).filter(is_client_amount_transfered = True).count()
         payment_pending_bounties_count = Bounties.objects.filter(client_id = user_id).filter(is_amount_transfered = False).count()
         disputed_bounties_count = Bounties.objects.filter(client_id = user_id).filter(is_disputed = True).count()
         

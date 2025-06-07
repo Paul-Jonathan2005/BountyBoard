@@ -5,6 +5,7 @@ import Navbar from '../components/NavBar.jsx'
 import '../css/CreatedBounties.css'
 import { fetchDisputedBounties } from '../services/api';
 import BountyTileList from '../components/BountyTileList';
+import NoBounties from '../assets/no-data.png';
 
 export default function BountyDisputePage() {
   const [bounties, setBounties] = useState([]);
@@ -25,7 +26,14 @@ export default function BountyDisputePage() {
     <div className='createdbounties'>
       <Header />
       <Navbar />
-      <BountyTileList bountyList={bounties} bountyType="COMPLETED" viewerType="voter" />
+      {bounties.length > 0 ? (
+        <BountyTileList bountyList={bounties} bountyType="COMPLETED" viewerType="voter" />
+      ) : (
+        <div className="no-bounties">
+          <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
+          <p>No Disputed Bounties Found</p>
+        </div>
+      )}
       <Footer />
     </div>
     </>

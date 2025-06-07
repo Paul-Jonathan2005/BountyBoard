@@ -1,6 +1,6 @@
 import React from 'react';
 import TaskTypeTile from './TaskTypeTile';
-import '../css/TaskTypeGrid.css'; 
+import '../css/TaskTypeGrid.css';
 
 export default function TaskTypeGrid({ taskTypes }) {
   return (

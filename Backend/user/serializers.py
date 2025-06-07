@@ -21,7 +21,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             "age",
             "gender",
             "linkedin_profile_link",
-            "pera_wallet_address",
         ]
 
     def validate(self, data):
@@ -72,7 +71,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             age=validated_data["age"],
             gender=validated_data["gender"],
             linkedin_profile_link=validated_data["linkedin_profile_link"],
-            pera_wallet_address=validated_data["pera_wallet_address"],
         )
         user.set_password(validated_data["password"])
         user.save()

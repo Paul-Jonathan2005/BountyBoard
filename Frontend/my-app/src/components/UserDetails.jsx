@@ -10,46 +10,46 @@ export default function UserDetails() {
   const [walletInfo, setWalletInfo] = useState(null);
   const { algodClient, activeAddress, signData, transactionSigner, wallets } = useWallet()
 
-useEffect(() => {
-  const storedWalletInfo = localStorage.getItem('walletInfo');
-  if (storedWalletInfo) {
-    try {
-      const parsed = JSON.parse(storedWalletInfo);
-      setWalletInfo(parsed);
-    } catch (e) {
-      console.error("Failed to parse walletInfo from localStorage:", e);
-    }
-  }
-
-  const loadUserDetails = async () => {
-    try {
-      const data = await fetchUserDetails();
-      setUserData(data);
-    } catch (error) {
-      console.error('Error fetching user details:', error);
-    }
-  };
-
-  loadUserDetails();
-}, []);
-
-useEffect(() => {
-  const refreshBalance = async () => {
-    if (walletInfo?.address) {
+  useEffect(() => {
+    const storedWalletInfo = localStorage.getItem('walletInfo');
+    if (storedWalletInfo) {
       try {
-        const accountInfo = await algodClient.accountInformation(walletInfo.address).do();
-        setWalletInfo((prev) => ({
-          ...prev,
-          balance: Number(accountInfo.amount) / 1e6
-        }));
-      } catch (error) {
-        console.error('Failed to refresh balance:', error);
+        const parsed = JSON.parse(storedWalletInfo);
+        setWalletInfo(parsed);
+      } catch (e) {
+        console.error("Failed to parse walletInfo from localStorage:", e);
       }
     }
-  };
 
-  refreshBalance();
-}, [walletInfo?.address]);
+    const loadUserDetails = async () => {
+      try {
+        const data = await fetchUserDetails();
+        setUserData(data);
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
+
+    loadUserDetails();
+  }, []);
+
+  useEffect(() => {
+    const refreshBalance = async () => {
+      if (walletInfo?.address) {
+        try {
+          const accountInfo = await algodClient.accountInformation(walletInfo.address).do();
+          setWalletInfo((prev) => ({
+            ...prev,
+            balance: Number(accountInfo.amount) / 1e6
+          }));
+        } catch (error) {
+          console.error('Failed to refresh balance:', error);
+        }
+      }
+    };
+
+    refreshBalance();
+  }, [walletInfo?.address]);
 
   const handleWalletConnect = async () => {
     const peraWallet = wallets[0];
@@ -59,7 +59,7 @@ useEffect(() => {
       const accountInfo = await algodClient.accountInformation(address).do();
       const value = {
         address,
-        balance: Number(accountInfo.amount) / 1e6      
+        balance: Number(accountInfo.amount) / 1e6
       }
       setWalletInfo(value);
       localStorage.setItem('walletAddress', address);

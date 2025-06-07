@@ -45,28 +45,25 @@
   margin: 4px;
 }
 
-.submenu li {
+.submenu a li {
   padding: 10px 20px;
   margin-left: 20px;
 }
 
-.submenu li a {
+.submenu a li {
   color: #d1d5db;
   font-size: 14px;
   text-decoration: none;
 }
 
-.submenu li:hover {
+.submenu a li:hover {
   background-color: #1f2937;
+  border-radius: 5px;
 }
 
-.submenu li.active a {
+.submenu a li.active {
   color: #ffffff;
   font-weight: bold;
   border-radius: 5px;
-}
-
-.submenu li.active {
   background-color: #334155;
-  border-radius: 5px;
 }

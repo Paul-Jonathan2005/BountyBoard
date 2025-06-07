@@ -4,7 +4,8 @@ import Header from '../components/Header.jsx'
 import Navbar from '../components/NavBar.jsx'
 import { fetchClientBountyList } from '../services/api.js';
 import BountyTileList from '../components/BountyTileList.jsx';
-import '../css/CreatedBounties.css'
+import '../css/CreatedBounties.css';
+import NoBounties from '../assets/no-data.png';
 
 export default function PaymentPendingPage() {
     const [bounties, setBounties] = useState([]);
@@ -24,7 +25,14 @@ export default function PaymentPendingPage() {
     <div id="paymentpending">
       <Header />
       <Navbar />
-      <BountyTileList bountyList={bounties} bountyType="COMPLETED" viewerType="client" />
+      {bounties.length > 0 ? (
+        <BountyTileList bountyList={bounties} bountyType="COMPLETED" viewerType="client" />
+      ) : (
+        <div className="no-bounties">
+          <img src= {NoBounties} alt="No Bounties" className="no-bounties-img" />
+          <p>No Payment Pending Bounties Found</p>
+        </div>
+      )}
       <Footer />
     </div>
       

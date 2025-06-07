@@ -7,23 +7,23 @@ import { useNavigate } from 'react-router-dom';
 import '../css/Header.css';
 
 export default function Header() {
-    const navigate = useNavigate();
-    const [alertMessage, setAlertMessage] = useState('');
-    const [username, setUsername] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [type, setType] = useState("success")
+  const navigate = useNavigate();
+  const [alertMessage, setAlertMessage] = useState('');
+  const [username, setUsername] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [type, setType] = useState("success")
 
-    useEffect(() => {
-        const storedUsername = localStorage.getItem('username');
-        const token = localStorage.getItem('authToken');
-        if (storedUsername && token) {
-            setUsername(storedUsername);
-            setIsLoggedIn(true);
-        }
-    }, []);
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    const token = localStorage.getItem('authToken');
+    if (storedUsername && token) {
+      setUsername(storedUsername);
+      setIsLoggedIn(true);
+    }
+  }, []);
 
-    const handleClick = async (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
     try {
       const data = await logoutUser();
@@ -31,20 +31,20 @@ export default function Header() {
       setShowAlert(true);
       setType("success")
       setTimeout(() => {
-      navigate('/');
+        navigate('/');
       }, 1500);
     } catch (error) {
-        const msg = extractErrorMessage(error);
-        setAlertMessage(msg);
-        setShowAlert(true);
-        setType("error")
+      const msg = extractErrorMessage(error);
+      setAlertMessage(msg);
+      setShowAlert(true);
+      setType("error")
     }
   };
 
 
-    return (
-        <>
-        {showAlert && (
+  return (
+    <>
+      {showAlert && (
         <Alert
           message={alertMessage}
           type={type}
@@ -53,29 +53,29 @@ export default function Header() {
         />
       )}
 
-        <header className="header">
-            <div className="header-content">
-                <div className="header-left">
-                    {isLoggedIn && (
-                        <span
-                          className="username clickable"
-                          onClick={() => navigate('/user-details')}
-                        >
-                          🧑‍💼 {username}
-                        </span>
-                    )}
-                </div>
-                <div className="header-center">
-                    <img src={AlgorandLogo} alt="Algorand Logo" />
-                    <h1>Bounty Board</h1>
-                </div>
-                <div className="header-right">
-                    {isLoggedIn && (
-                            <button onClick={handleClick} className="logout-button">Logout</button>
-                    )}
-                </div>
-            </div>
-        </header>
-        </>
-    );
+      <header className="header">
+        <div className="header-content">
+          <div className="header-left">
+            {isLoggedIn && (
+              <span
+                className="username clickable"
+                onClick={() => navigate('/user-details')}
+              >
+                🧑‍💼 {username}
+              </span>
+            )}
+          </div>
+          <div className="header-center">
+            <img src={AlgorandLogo} alt="Algorand Logo" />
+            <h1>Bounty Board</h1>
+          </div>
+          <div className="header-right">
+            {isLoggedIn && (
+              <button onClick={handleClick} className="logout-button">Logout</button>
+            )}
+          </div>
+        </div>
+      </header>
+    </>
+  );
 }
