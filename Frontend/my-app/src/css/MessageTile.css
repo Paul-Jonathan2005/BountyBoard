@@ -19,19 +19,19 @@
   font-size: 15px;
   line-height: 1.5;
   position: relative;
-  background-color: #f1f5f9; 
+  background-color: #f1f5f9;
   color: #111827;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   border: 1px solid #d1d5db;
   word-wrap: break-word;
-  font-weight: normal;  
+  font-weight: normal;
 }
 
 .chat-right .chat-bubble {
-  background-color: #dcf8c6; 
+  background-color: #dcf8c6;
   color: #111827;
   border: 1px solid #c0e7b3;
-  font-weight: normal;  
+  font-weight: normal;
 }
 
 
@@ -46,9 +46,9 @@
   display: block;
   font-size: 16px;
   font-weight: 600;
-    margin-right: 7px;
+  margin-right: 7px;
   text-transform: capitalize;
-  color: #1220f0; 
+  color: #1220f0;
 }
 
 .chat-time {

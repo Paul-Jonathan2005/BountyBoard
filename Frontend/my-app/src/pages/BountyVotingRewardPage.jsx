@@ -23,19 +23,19 @@ export default function BountyVotingRewardPage() {
 
   return (
     <>
-    <div className='createdbounties'>
-      <Header />
-      <Navbar />
-      {bounties.length > 0 ? (
-        <BountyTileList bountyList={bounties} bountyType="PAID" viewerType="voter" />
-      ) : (
-        <div className="no-bounties">
-          <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
-          <p>You haven’t voted for any bounty yet</p>
-        </div>
-      )}
-      <Footer />
-    </div>
+      <div className='createdbounties'>
+        <Header />
+        <Navbar />
+        {bounties.length > 0 ? (
+          <BountyTileList bountyList={bounties} bountyType="PAID" viewerType="voter" />
+        ) : (
+          <div className="no-bounties">
+            <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
+            <p>You haven’t voted for any bounty yet</p>
+          </div>
+        )}
+        <Footer />
+      </div>
     </>
   )
 }

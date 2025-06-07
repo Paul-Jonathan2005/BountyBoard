@@ -12,6 +12,6 @@ export default function BountyDetailsPage() {
       <BountyDetails />
       <Footer />
     </div>
-      
+
   )
 }

@@ -1,4 +1,4 @@
-.full-container{
+.full-container {
   margin-top: 90px;
   margin-bottom: 50px;
 }
@@ -58,15 +58,15 @@
   background: none;
   padding: 20px 30px;
   border-radius: 30px;
-  color: #111827; 
+  color: #111827;
   max-width: 660px;
   font-size: 16px;
   font-family: 'Ubuntu', sans-serif;
   line-height: 1.6;
   text-align: left;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  border: 1.5px solid #d1d5db; 
-  background-color: #fff; 
+  border: 1.5px solid #d1d5db;
+  background-color: #fff;
 }
 
 .bounty-details-description ul {
@@ -74,14 +74,14 @@
   text-align: left !important;
   padding-left: 24px;
   margin: 0;
-  color: #374151; 
+  color: #374151;
 }
 
 .bounty-details-description li {
   margin-bottom: 12px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: #4b5563; 
+  color: #4b5563;
 }
 
 .bounty-details-info-row {
@@ -146,25 +146,25 @@
 }
 
 .request-bounty-button:hover {
-    background: linear-gradient(90deg, #16a34a, #22c55e);
-    transform: translateY(-2px);
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  transform: translateY(-2px);
 }
 
 .requested-bounty-button {
-    display: block;
-    margin: 30px auto 0 auto;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 600;
-    font-family: 'Ubuntu', sans-serif;
-    color: white;
-    background: linear-gradient(90deg, #2563eb, #60a5fa);
-    border: none;
-    border-radius: 8px;
-    cursor: default;
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
-    text-align: center;
-    pointer-events: none;
+  display: block;
+  margin: 30px auto 0 auto;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Ubuntu', sans-serif;
+  color: white;
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+  border: none;
+  border-radius: 8px;
+  cursor: default;
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+  text-align: center;
+  pointer-events: none;
 }
 
 .no-bounty-requests-message {
@@ -175,37 +175,38 @@
 }
 
 .bounty-requests-button {
-    display: block;
-    margin: 10px auto 0 auto;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 600;
-    font-family: 'Ubuntu', sans-serif;
-    color: white;
-    background: linear-gradient(90deg, #22c55e, #4ade80);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-    transition: background 0.3s ease, transform 0.2s ease;
+  display: block;
+  margin: 10px auto 0 auto;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Ubuntu', sans-serif;
+  color: white;
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .bounty-requests {
-    display: block;
-    margin: 10px auto 0 auto;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 600;
-    font-family: 'Ubuntu', sans-serif;
-    color: white;
-    background: linear-gradient(90deg, #2563eb, #60a5fa);
-    border: none;
-    border-radius: 8px;
-    cursor: default;
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
-    text-align: center;
-    pointer-events: none;
+  display: block;
+  margin: 10px auto 0 auto;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Ubuntu', sans-serif;
+  color: white;
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+  border: none;
+  border-radius: 8px;
+  cursor: default;
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+  text-align: center;
+  pointer-events: none;
 }
+
 .chat-box {
   border: 2px solid #d1d5db;
   border-radius: 12px;
@@ -304,6 +305,7 @@
   color: #9ca3af;
   cursor: not-allowed;
 }
+
 .final-submission-link {
   display: block;
   margin: 30px auto 50px auto;
@@ -324,6 +326,7 @@
   background-color: #2563eb;
   color: white;
 }
+
 .pay-button {
   display: block;
   margin: 30px auto;
@@ -346,7 +349,7 @@
 }
 
 .dispute-button {
-  background: linear-gradient(to right, #ff4e50, #f44336); 
+  background: linear-gradient(to right, #ff4e50, #f44336);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -365,6 +368,7 @@
 .dispute-button:hover {
   background: linear-gradient(to right, #ff3b3f, #d32f2f);
 }
+
 .vote-buttons-container {
   display: flex;
   flex-direction: row;
@@ -451,9 +455,11 @@
   0% {
     box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6);
   }
+
   70% {
     box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
   }
@@ -462,14 +468,15 @@
 .dispute-result {
   text-align: center;
   margin: 20px auto;
-background: linear-gradient(90deg, #6ee7b7, #3b82f6);  padding: 32px;
+  background: linear-gradient(90deg, #6ee7b7, #3b82f6);
+  padding: 32px;
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
   max-width: 340px;
   font-family: 'Ubuntu', sans-serif;
   border-left: 8px solid #3b82f6;
   margin-bottom: 10px;
-  
+
 }
 
 .dispute-result h3 {
@@ -501,6 +508,7 @@ background: linear-gradient(90deg, #6ee7b7, #3b82f6);  padding: 32px;
   margin-top: 12px;
   box-shadow: 0 4px 10px rgba(34, 197, 94, 0.25);
 }
+
 .release-button {
   padding: 14px 32px;
   border-radius: 10px;
@@ -528,6 +536,7 @@ background: linear-gradient(90deg, #6ee7b7, #3b82f6);  padding: 32px;
   text-align: center;
   margin-top: 4px;
 }
+
 .loader-overlay {
   position: fixed;
   top: 0;
@@ -592,6 +601,7 @@ background: linear-gradient(90deg, #6ee7b7, #3b82f6);  padding: 32px;
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

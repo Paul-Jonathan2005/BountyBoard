@@ -6,29 +6,29 @@ import Header from '../components/Header.jsx'
 import Navbar from '../components/NavBar.jsx'
 import BountyTileList from '../components/BountyTileList';
 
-export default function TaskTypeBounties(){
-    const { taskType } = useParams();
-    const [taskTypeBounties, setTaskTypeBounties] = useState([]);
+export default function TaskTypeBounties() {
+  const { taskType } = useParams();
+  const [taskTypeBounties, setTaskTypeBounties] = useState([]);
 
-    useEffect(() => {
-        const getTaskTypeBounties = async () => {
-          try {
-            const data = await fecthTaskTypeBounties(taskType);
-            setTaskTypeBounties(data);
-          } catch (error) {
-            console.error('Failed to fetch bounties:', error);
-          }
-        };
-        getTaskTypeBounties();
-      }, []);
-    return (
-     <div className='bountyType'>
+  useEffect(() => {
+    const getTaskTypeBounties = async () => {
+      try {
+        const data = await fecthTaskTypeBounties(taskType);
+        setTaskTypeBounties(data);
+      } catch (error) {
+        console.error('Failed to fetch bounties:', error);
+      }
+    };
+    getTaskTypeBounties();
+  }, []);
+  return (
+    <div className='bountyType'>
       <Header />
       <Navbar />
-      <BountyTileList bountyList={taskTypeBounties} bountyType="INPROGRESS"  viewerType ="freelancer"/>
+      <BountyTileList bountyList={taskTypeBounties} bountyType="INPROGRESS" viewerType="freelancer" />
       <Footer />
     </div>
-      
+
   )
 
 }

@@ -1,4 +1,3 @@
-
 .tile-green-1 {
   background: linear-gradient(135deg, #16a34a, #4ade80);
 }
@@ -37,8 +36,8 @@
   background: linear-gradient(90deg, #1e3a8a, #3b82f6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-          background-clip: text;
-          color: transparent;
+  background-clip: text;
+  color: transparent;
 }
 
 .dashboard-grid {
@@ -69,8 +68,10 @@
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 6px;
-  color: #fff7ed; /* soft cream-white for better contrast */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* subtle depth */
+  color: #fff7ed;
+  /* soft cream-white for better contrast */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* subtle depth */
 }
 
 .dashboard-tile p {

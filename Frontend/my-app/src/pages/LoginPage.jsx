@@ -10,6 +10,6 @@ export default function LoginPage() {
       <Login />
       <Footer />
     </div>
-      
+
   )
 }

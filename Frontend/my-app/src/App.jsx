@@ -43,13 +43,13 @@ import { NetworkId, WalletId, WalletManager, WalletProvider } from '@txnlab/use-
 
 export default function App() {
   const walletManager = new WalletManager({
-  wallets: [
-    WalletId.PERA,
-  ],
-  defaultNetwork: NetworkId.TESTNET,
-  dappMetadata: {
-    name: 'Algo Bounty Board'
-  }
+    wallets: [
+      WalletId.PERA,
+    ],
+    defaultNetwork: NetworkId.TESTNET,
+    dappMetadata: {
+      name: 'Algo Bounty Board'
+    }
   })
 
   return (

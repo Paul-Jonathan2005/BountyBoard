@@ -48,7 +48,8 @@
 }
 
 .modal-actions button[type='submit'] {
-  background-color: #10b981; /* green */
+  background-color: #10b981;
+  /* green */
   color: white;
   font-family: 'Ubuntu', sans-serif;
   border: none;
@@ -63,7 +64,8 @@
 }
 
 .modal-actions button[type='button'] {
-  background-color: #ef4444; /* red */
+  background-color: #ef4444;
+  /* red */
   color: white;
   font-family: 'Ubuntu', sans-serif;
   border: none;

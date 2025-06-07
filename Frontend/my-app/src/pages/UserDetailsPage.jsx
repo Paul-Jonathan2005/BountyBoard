@@ -8,10 +8,10 @@ export default function UserDetailsPage() {
   return (
     <div id="userdetails">
       <Header />
-      <Navbar/>
+      <Navbar />
       <UserDetails />
       <Footer />
     </div>
-      
+
   )
 }

@@ -1,7 +1,9 @@
 .sidebar {
   position: fixed;
-  top: 80px; /* height of header */
-  bottom: 40px; /* height of footer */
+  top: 80px;
+  /* height of header */
+  bottom: 40px;
+  /* height of footer */
   left: 0;
   width: 60px;
   background-color: #0f2027;

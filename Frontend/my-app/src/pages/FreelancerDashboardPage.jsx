@@ -13,6 +13,6 @@ export default function FreelancerDashboardPage() {
       <FreelancerDashboard />
       <Footer />
     </div>
-      
+
   )
 }

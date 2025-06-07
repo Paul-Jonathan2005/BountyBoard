@@ -8,18 +8,18 @@ import '../css/CreatedBounties.css';
 import NoBounties from '../assets/no-data.png';
 
 export default function PaymentPendingPage() {
-    const [bounties, setBounties] = useState([]);
-      useEffect(() => {
-        const getBounties = async () => {
-          try {
-            const data = await fetchFreelancerBountyList('COMPLETED');
-            setBounties(data);
-          } catch (error) {
-            console.error('Failed to fetch bounties:', error);
-          }
-        };
-        getBounties();
-      }, []);
+  const [bounties, setBounties] = useState([]);
+  useEffect(() => {
+    const getBounties = async () => {
+      try {
+        const data = await fetchFreelancerBountyList('COMPLETED');
+        setBounties(data);
+      } catch (error) {
+        console.error('Failed to fetch bounties:', error);
+      }
+    };
+    getBounties();
+  }, []);
 
   return (
     <div id="paymentpending">

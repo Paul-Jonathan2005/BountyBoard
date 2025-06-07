@@ -75,8 +75,7 @@ button:focus-visible {
 }
 
 body {
-    margin: 0;
-    font-family: 'Ubuntu', sans-serif;
-    background-color: #FAFAF8;
+  margin: 0;
+  font-family: 'Ubuntu', sans-serif;
+  background-color: #FAFAF8;
 }
-
