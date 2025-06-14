@@ -409,6 +409,8 @@ export const transferAlgosToFreelancer = async (
 ) =>{
   const atc = new algosdk.AtomicTransactionComposer();
   const suggestedParams = await algodClient.getTransactionParams().do();
+  suggestedParams.flatFee = true;
+  suggestedParams.fee = 4000;
 
   const method = algosdk.ABIMethod.fromSignature(
     'release_reward(uint64,address)uint64'
@@ -423,7 +425,6 @@ export const transferAlgosToFreelancer = async (
         activeAddress,
       ],
       sender: activeAddress,
-      fee: 4000,
       suggestedParams,
       boxes: [{ appIndex: env_config.smart_contract_app_id, name: boxKey }],
       signer: transactionSigner,
@@ -479,6 +480,7 @@ export const votingSmartContract = async(
   const atc = new algosdk.AtomicTransactionComposer();
   const suggestedParams = await algodClient.getTransactionParams().do();
 
+
   const method = algosdk.ABIMethod.fromSignature(
     'cast_vote(uint64,bool,address)void'
   );
@@ -513,7 +515,8 @@ export const claimRewardSmartContract = async(
 ) => {
   const atc = new algosdk.AtomicTransactionComposer();
   const suggestedParams = await algodClient.getTransactionParams().do();
-
+  suggestedParams.flatFee = true;
+  suggestedParams.fee = 4000
   const method = algosdk.ABIMethod.fromSignature(
     'resolve_dispute(uint64,address)uint64'
   );
