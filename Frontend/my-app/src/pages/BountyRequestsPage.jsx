@@ -8,18 +8,18 @@ import '../css/CreatedBounties.css';
 import NoBounties from '../assets/no-data.png';
 
 export default function BountyRequestsPage() {
-    const [bounties, setBounties] = useState([]);
-      useEffect(() => {
-        const getBounties = async () => {
-          try {
-            const data = await fetchFreelancerBounties();
-            setBounties(data);
-          } catch (error) {
-            console.error('Failed to fetch bounties:', error);
-          }
-        };
-        getBounties();
-      }, []);
+  const [bounties, setBounties] = useState([]);
+  useEffect(() => {
+    const getBounties = async () => {
+      try {
+        const data = await fetchFreelancerBounties();
+        setBounties(data);
+      } catch (error) {
+        console.error('Failed to fetch bounties:', error);
+      }
+    };
+    getBounties();
+  }, []);
 
   return (
     <div id="requestedbounties">
@@ -35,6 +35,6 @@ export default function BountyRequestsPage() {
       )}
       <Footer />
     </div>
-      
+
   )
 }

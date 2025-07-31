@@ -31,33 +31,33 @@ export default function CreatedBountiesPage() {
 
   return (
     <>
-    {showAlert && (
-            <Alert
-            message={alertMessage}
-            type={type}
-            duration={3000}
-            onClose={() => setShowAlert(false)}
-            />
-        )}
-    <div className='createdbounties'>
-      <Header />
-      <Navbar />
-      {bounties.length > 0 ? (
-      <BountyTileList bountyList={bounties} bountyType="INPROGRESS" viewerType="client" />
-      ) : (
-        <div className="no-bounties">
-          <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
-          <p>Create Any Bounty</p>
-        </div>
+      {showAlert && (
+        <Alert
+          message={alertMessage}
+          type={type}
+          duration={3000}
+          onClose={() => setShowAlert(false)}
+        />
       )}
-      <button className="create-bounty-button" onClick={() => setShowForm(true)  }>
-        Create Bounty
-      </button>
+      <div className='createdbounties'>
+        <Header />
+        <Navbar />
+        {bounties.length > 0 ? (
+          <BountyTileList bountyList={bounties} bountyType="INPROGRESS" viewerType="client" />
+        ) : (
+          <div className="no-bounties">
+            <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
+            <p>Create Any Bounty</p>
+          </div>
+        )}
+        <button className="create-bounty-button" onClick={() => setShowForm(true)}>
+          Create Bounty
+        </button>
 
-      {showForm && <CreateBountyForm onClose={() => setShowForm(false)} setShowAlert={setShowAlert} setType={setType} setAlertMessage={setAlertMessage} />}
+        {showForm && <CreateBountyForm onClose={() => setShowForm(false)} setShowAlert={setShowAlert} setType={setType} setAlertMessage={setAlertMessage} />}
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
     </>
   )
 }

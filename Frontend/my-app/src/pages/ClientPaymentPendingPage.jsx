@@ -8,18 +8,18 @@ import '../css/CreatedBounties.css';
 import NoBounties from '../assets/no-data.png';
 
 export default function PaymentPendingPage() {
-    const [bounties, setBounties] = useState([]);
-      useEffect(() => {
-        const getBounties = async () => {
-          try {
-            const data = await fetchClientBountyList('COMPLETED');
-            setBounties(data);
-          } catch (error) {
-            console.error('Failed to fetch bounties:', error);
-          }
-        };
-        getBounties();
-      }, []);
+  const [bounties, setBounties] = useState([]);
+  useEffect(() => {
+    const getBounties = async () => {
+      try {
+        const data = await fetchClientBountyList('COMPLETED');
+        setBounties(data);
+      } catch (error) {
+        console.error('Failed to fetch bounties:', error);
+      }
+    };
+    getBounties();
+  }, []);
 
   return (
     <div id="paymentpending">
@@ -29,12 +29,12 @@ export default function PaymentPendingPage() {
         <BountyTileList bountyList={bounties} bountyType="COMPLETED" viewerType="client" />
       ) : (
         <div className="no-bounties">
-          <img src= {NoBounties} alt="No Bounties" className="no-bounties-img" />
+          <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
           <p>No Payment Pending Bounties Found</p>
         </div>
       )}
       <Footer />
     </div>
-      
+
   )
 }

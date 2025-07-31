@@ -23,19 +23,19 @@ export default function BountyDisputePage() {
 
   return (
     <>
-    <div className='createdbounties'>
-      <Header />
-      <Navbar />
-      {bounties.length > 0 ? (
-        <BountyTileList bountyList={bounties} bountyType="COMPLETED" viewerType="voter" />
-      ) : (
-        <div className="no-bounties">
-          <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
-          <p>No Disputed Bounties Found</p>
-        </div>
-      )}
-      <Footer />
-    </div>
+      <div className='createdbounties'>
+        <Header />
+        <Navbar />
+        {bounties.length > 0 ? (
+          <BountyTileList bountyList={bounties} bountyType="COMPLETED" viewerType="voter" />
+        ) : (
+          <div className="no-bounties">
+            <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
+            <p>No Disputed Bounties Found</p>
+          </div>
+        )}
+        <Footer />
+      </div>
     </>
   )
 }

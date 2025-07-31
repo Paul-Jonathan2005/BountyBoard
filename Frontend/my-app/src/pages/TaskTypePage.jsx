@@ -8,8 +8,8 @@ import TaskTypeGrid from '../components/TaskTypeGrid.jsx';
 
 export default function BountyTypePage() {
   const [task_types, setTaskType] = useState([]);
- 
- useEffect(() => {
+
+  useEffect(() => {
     const getTaskType = async () => {
       try {
         const data = await fetchBountyTypes();
@@ -28,6 +28,6 @@ export default function BountyTypePage() {
       < TaskTypeGrid taskTypes={task_types} />
       <Footer />
     </div>
-      
+
   )
 }

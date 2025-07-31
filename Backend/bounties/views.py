@@ -146,7 +146,7 @@ def get_client_bounties(request, client_id, bounty_type):
         client_bounties = client_bounties.filter(is_completed=False)
     elif bounty_type == "COMPLETED":
         client_bounties = client_bounties.filter(is_completed=True).filter(
-            Q(is_amount_transfered=False) | Q(is_client_amount_transfered = False)
+            Q(is_amount_transfered=False) | Q(is_client_amount_transfered=False)
         )
     elif bounty_type == "PAID":
         client_bounties = client_bounties.filter(is_completed=True).filter(
@@ -166,7 +166,7 @@ def get_client_bounties(request, client_id, bounty_type):
     else:
         client_bounties = serializer.data
         for bounty in client_bounties:
-            if Request_table.objects.filter(bounty_id = bounty["id"]).exists():
+            if Request_table.objects.filter(bounty_id=bounty["id"]).exists():
                 bounty["is_requested"] = True
             else:
                 bounty["is_requested"] = False
@@ -191,11 +191,11 @@ def transfer_directly_amount(request, bounty_id):
     bounty.is_amount_transfered = True
     bounty.is_client_amount_transfered = True
     bounty.save()
-    
-    user = BountyFreelancerMap.objects.get(bounty_id = bounty_id).assigned_candidate_id
+
+    user = BountyFreelancerMap.objects.get(bounty_id=bounty_id).assigned_candidate_id
     user.earned_task_reward += bounty.amount
     user.save()
-    
+
     return Response(
         {"status": True, "message": " Amount Transfered Successfully "},
         status.HTTP_200_OK,
@@ -360,7 +360,9 @@ def get_bounties_details(request, bounty_id, freelancer_id):
     client_name = bounty.client_id.username
     freelancer_name = None
     if bounty.is_assigened:
-        freelancer_name = BountyFreelancerMap.objects.get(bounty_id =bounty_id).assigned_candidate_id.username
+        freelancer_name = BountyFreelancerMap.objects.get(
+            bounty_id=bounty_id
+        ).assigned_candidate_id.username
 
     bounty_map = BountyFreelancerMap.objects.filter(bounty_id=bounty_id).first()
     assigned_candidate_id = bounty_map.assigned_candidate_id.id if bounty_map else None
@@ -379,7 +381,7 @@ def get_bounties_details(request, bounty_id, freelancer_id):
         "voted_for": voted_for,
         "vote_active": vote_active,
         "client_name": client_name,
-        "freelancer_name": freelancer_name
+        "freelancer_name": freelancer_name,
     }
     if (
         bounty.is_disputed
@@ -452,11 +454,11 @@ def delete_vote(request, bounty_id, user_id):
     vote = Voting_table.objects.get(Q(bounty_id=bounty_id) & Q(user=user_id))
     vote.active = False
     vote.save()
-    
+
     votes_count = Voting_table.objects.filter(bounty_id=bounty_id).count()
-    reward = Bounties.objects.get(id = bounty_id ).amount
-    user = MyUser.objects.get(id = user_id)
-    user.earned_task_reward += ((reward *0.1)/ votes_count)
+    reward = Bounties.objects.get(id=bounty_id).amount
+    user = MyUser.objects.get(id=user_id)
+    user.earned_task_reward += (reward * 0.1) / votes_count
     user.save()
 
     return Response(
@@ -470,8 +472,10 @@ def delete_vote(request, bounty_id, user_id):
 
 @api_view(["GET"])
 def get_reward_bounties(request, user_id):
-    bounty_ids = Voting_table.objects.filter(user_id=user_id).filter(active = True).values_list(
-        "bounty_id", flat=True
+    bounty_ids = (
+        Voting_table.objects.filter(user_id=user_id)
+        .filter(active=True)
+        .values_list("bounty_id", flat=True)
     )
     bounties = Bounties.objects.filter(id__in=bounty_ids)
 
@@ -490,7 +494,7 @@ def get_reward_bounties(request, user_id):
 def transfer_amount(request, is_freelancer, bounty_id):
     bounty = Bounties.objects.get(id=bounty_id)
     is_freelancer = is_freelancer.lower() == "true"
-    
+
     votes = Voting_table.objects.filter(bounty_id=bounty_id)
     freelancer_votes = votes.filter(voted_for="FREELANCER").count()
     client_votes = votes.filter(voted_for="CLIENT").count()
@@ -516,10 +520,12 @@ def transfer_amount(request, is_freelancer, bounty_id):
                 reward = bounty.amount
             else:
                 reward = bounty.amount * 0.9
-        user = BountyFreelancerMap.objects.get(bounty_id=bounty_id).assigned_candidate_id
+        user = BountyFreelancerMap.objects.get(
+            bounty_id=bounty_id
+        ).assigned_candidate_id
         user.earned_task_reward += reward
         user.save()
-            
+
     else:
         bounty.is_client_amount_transfered = True
         if winner == "TIE":

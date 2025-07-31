@@ -23,19 +23,19 @@ export default function AssignedBountiesPage() {
 
   return (
     <>
-    <div className='createdbounties'>
-      <Header />
-      <Navbar />
-      {bounties.length > 0 ? (
-        <BountyTileList bountyList={bounties} bountyType="INPROGRESS" viewerType="freelancer" />
-      ) : (
-        <div className="no-bounties">
-          <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
-          <p>No Bounties Assigned</p>
-        </div>
-      )}
-      <Footer />
-    </div>
+      <div className='createdbounties'>
+        <Header />
+        <Navbar />
+        {bounties.length > 0 ? (
+          <BountyTileList bountyList={bounties} bountyType="INPROGRESS" viewerType="freelancer" />
+        ) : (
+          <div className="no-bounties">
+            <img src={NoBounties} alt="No Bounties" className="no-bounties-img" />
+            <p>No Bounties Assigned</p>
+          </div>
+        )}
+        <Footer />
+      </div>
     </>
   )
 }

@@ -12,6 +12,6 @@ export default function ClientDashboardPage() {
       <ClientDashboard />
       <Footer />
     </div>
-      
+
   )
 }

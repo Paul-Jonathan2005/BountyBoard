@@ -62,7 +62,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             username=validated_data["username"],
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
-            user_role = "FREELANCER",
+            user_role="FREELANCER",
             email=validated_data["email"],
             phone_number=validated_data["phone_number"],
             company_name=validated_data["company_name"],

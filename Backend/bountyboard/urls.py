@@ -81,7 +81,9 @@ urlpatterns = [
     path("accept-submission-link/<int:bounty_id>", accept_submission_link),
     path("transfer-amount/<str:is_freelancer>/<int:bounty_id>", transfer_amount),
     path("raise-dispute/<int:bounty_id>", raise_bounty_dispute),
-    path("get-requested-bounties/<int:freelancer_id>", get_freelancer_requested_bounties),
+    path(
+        "get-requested-bounties/<int:freelancer_id>", get_freelancer_requested_bounties
+    ),
     path("get-disputed-bounties/<int:user_id>", get_disputed_bounties),
     path("get-reward-bounties/<int:user_id>", get_reward_bounties),
     path("get-dashboard-details/<str:user_type>/<int:user_id>", dashboard_data),

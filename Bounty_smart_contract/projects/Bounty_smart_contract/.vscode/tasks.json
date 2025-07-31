@@ -7,7 +7,11 @@
       "windows": {
         "command": "${workspaceFolder}/.venv/Scripts/python.exe"
       },
-      "args": ["-m", "smart_contracts", "build"],
+      "args": [
+        "-m",
+        "smart_contracts",
+        "build"
+      ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -23,7 +27,11 @@
       "windows": {
         "command": "${workspaceFolder}/.venv/Scripts/python.exe"
       },
-      "args": ["-m", "smart_contracts", "build"],
+      "args": [
+        "-m",
+        "smart_contracts",
+        "build"
+      ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -33,7 +41,10 @@
     {
       "label": "Start AlgoKit LocalNet",
       "command": "algokit",
-      "args": ["localnet", "start"],
+      "args": [
+        "localnet",
+        "start"
+      ],
       "type": "shell",
       "options": {
         "cwd": "${workspaceFolder}"
@@ -43,7 +54,10 @@
     {
       "label": "Stop AlgoKit LocalNet",
       "command": "algokit",
-      "args": ["localnet", "stop"],
+      "args": [
+        "localnet",
+        "stop"
+      ],
       "type": "shell",
       "options": {
         "cwd": "${workspaceFolder}"
@@ -53,7 +67,10 @@
     {
       "label": "Reset AlgoKit LocalNet",
       "command": "algokit",
-      "args": ["localnet", "reset"],
+      "args": [
+        "localnet",
+        "reset"
+      ],
       "type": "shell",
       "options": {
         "cwd": "${workspaceFolder}"
